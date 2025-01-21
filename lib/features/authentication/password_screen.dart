@@ -76,7 +76,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
-            "Password",
+            "Sign up",
           ),
           backgroundColor: Colors.white,
         ),
@@ -87,7 +87,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
             children: [
               Gaps.v40,
               const Text(
-                "What is your email?",
+                "Password",
                 style: TextStyle(
                   fontSize: Sizes.size24,
                   fontWeight: FontWeight.w700,
