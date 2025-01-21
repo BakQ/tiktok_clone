@@ -1,9 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/email_screen.dart';
+import 'package:tiktok_clone/features/authentication/widgets/form_button.dart';
 
-class EmailScreen extends StatelessWidget {
-  const EmailScreen({super.key});
+class UsernameScreen extends StatefulWidget {
+  const UsernameScreen({super.key});
+
+  @override
+  State<UsernameScreen> createState() => _EmailScreenState();
+}
+
+class _EmailScreenState extends State<UsernameScreen> {
+  final TextEditingController _usernamecontroller = TextEditingController();
+
+  String _username = "";
+
+  @override
+  void initState() {
+    super.initState();
+    //
+    _usernamecontroller.addListener(() {
+      _username = _usernamecontroller.text;
+      setState(() {});
+    });
+  }
+
+  //dispose 할때 usernamecontroller의 위젯을 삭제해주야 한다
+  // 삭제안하면 앱이 메모리 풀로 박살나고 말거다.
+  //그리고 super.dispose()를 밑에 두는게 깔끔하게 제거되는거다. initState는 위에
+  @override
+  void dispose() {
+    _usernamecontroller.dispose();
+    super.dispose();
+  }
+
+  //StatefulWidget 위젯에서는 context를 안받아도 된다 context는 항상 static처럼존재한다.
+  void onNextTap() {
+    if (_username.isEmpty) return;
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const EmailScreen(),
+      ),
+    ); // MaterialPageRoute
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +78,8 @@ class EmailScreen extends StatelessWidget {
             ),
             Gaps.v16,
             TextField(
+              //글자입력 정보 받아가는컨트롤러
+              controller: _usernamecontroller,
               decoration: InputDecoration(
                 //input창에 글나오게하는거
                 hintText: "Username",
@@ -52,7 +94,13 @@ class EmailScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              cursorColor: Theme.of(context).primaryColor,
             ),
+            Gaps.v28,
+            //부모 전체크기만큼 사이즈박스 만든다.
+            GestureDetector(
+                onTap: onNextTap,
+                child: FormButton(disabled: _username.isEmpty))
           ],
         ),
       ),
