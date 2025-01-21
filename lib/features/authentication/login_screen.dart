@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
 import 'package:tiktok_clone/features/authentication/widgets/auth_boutton.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -14,7 +15,13 @@ class LoginScreen extends StatelessWidget {
   }
 
   //메서드 앞에 언더바를 하면 private 접근자가 된다 플러터는 따로 접근자 변수가 없다 .
-  void _onEmailTap(BuildContext context) {}
+  void _onEmailLoginTap(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const LoginFormScreen(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +51,7 @@ class LoginScreen extends StatelessWidget {
             ),
             Gaps.v40,
             GestureDetector(
-              onTap: () => _onEmailTap(context),
+              onTap: () => _onEmailLoginTap(context),
               child: const AuthBoutton(
                   icon: FaIcon(FontAwesomeIcons.user),
                   text: "Use email & password"),
