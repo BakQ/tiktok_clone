@@ -41,7 +41,7 @@ class SignUpScreen extends StatelessWidget {
                 child: Text(
                   "See what's happening\nin the world right now.",
                   style: TextStyle(
-                    fontSize: Sizes.size32,
+                    fontSize: Sizes.size28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -87,7 +87,7 @@ class SignUpScreen extends StatelessWidget {
               GestureDetector(
                 onTap: () => _onAccountTap(context),
                 child: const AuthBoutton(
-                  text: "Continue with Apple",
+                  text: "Create account",
                   backGroudColor: Colors.black,
                   textColor: Colors.white,
                 ),

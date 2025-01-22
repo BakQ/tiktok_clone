@@ -52,7 +52,7 @@ class AuthBoutton extends StatelessWidget {
                 color:
                     textColor ?? Theme.of(context).appBarTheme.foregroundColor,
                 fontSize: Sizes.size16,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.bold,
               ), // TextStyle textAlign: TextAlign. center,
               textAlign: TextAlign.center,
             ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
 import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
+import 'package:tiktok_clone/clone_assignment/features/authentication/experience_screen.dart';
 import 'package:tiktok_clone/clone_assignment/widgets/auth_boutton.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -12,110 +14,278 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _name = "";
+  String _email = "";
+  DateTime? _selectedDate;
+  bool _isSwitchOn = false;
+
+  void _onExperinceTap(BuildContext context) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ExperienceScreen(),
+      ),
+    );
+
+    if (result != null && result["switchValue"] == true) {
+      setState(() {
+        _isSwitchOn = result["switchValue"];
+      });
+    }
+  }
+
+  String? _isEmailValid(String email) {
+    if (email.isEmpty) return null;
+    final regExp = RegExp(
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+    if (!regExp.hasMatch(email)) {
+      return "Email not valid";
+    }
+    return null;
+  }
+
+  bool _isFormValid() {
+    return _name.length >= 4 &&
+        _email.isNotEmpty &&
+        _isEmailValid(_email) == null &&
+        _selectedDate != null;
+  }
+
+  void _onScaffoldTap() {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      //안전 영역 그려주는 위젯
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.size40,
-          ),
-          child: Column(
+    return GestureDetector(
+      onTap: _onScaffoldTap,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Stack(
+            alignment: Alignment.center,
             children: [
-              Gaps.v10,
-              const Stack(
-                alignment: Alignment.center,
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      'Cancle',
-                      style: TextStyle(
-                        fontSize: Sizes.size14,
-                        fontWeight: FontWeight.w600,
-                      ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: Sizes.size16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  FaIcon(
-                    FontAwesomeIcons.twitter,
-                    color: Colors.blue,
-                    size: Sizes.size32,
-                  ),
-                ],
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 40),
-                child: Text(
-                  "Create your account",
-                  textAlign: TextAlign.start,
-                  style: TextStyle(
-                    fontSize: Sizes.size32,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ),
               ),
-              Gaps.v40,
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Name',
-                ),
-                //속성을 통해 입력된 값이 유효한지 확인하는 간단한 검증 로직을 포함합니다.
-                validator: (value) {
-                  //return 'i dont like your email';
-                  //return null 을 주면 이상없는게 된다.?
-                  //validator에서 null을 반환하면 입력 값이 유효하다고 간주되며, 폼 검증이 성공하면 onSaved 함수가 호출되어 데이터를 저장할 수 있습니다.
-                  return null;
-                },
-                onSaved: (newValue) {
-                  if (newValue != null) {}
-                },
-              ),
-              Gaps.v16,
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Phone number or email address',
-                ),
-                validator: (value) {
-                  return 'wrong password';
-                },
-              ),
-              Gaps.v16,
-              TextFormField(
-                decoration: const InputDecoration(
-                  hintText: 'Date of birth',
-                ),
-                validator: (value) {
-                  return 'wrong password';
-                },
+              const FaIcon(
+                FontAwesomeIcons.twitter,
+                color: Colors.blue,
+                size: Sizes.size32,
               ),
             ],
           ),
+          backgroundColor: Colors.white,
+          elevation: 0,
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-          SizedBox(
-            width: 80, // 버튼의 가로 크기
-            height: 40, // 버튼의 세로 크기
-            child: ElevatedButton(
-              onPressed: () {
-                // Next 버튼 동작
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey, // 버튼 색상
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0), // 둥근 모서리
+        body: Stack(
+          children: [
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Sizes.size40),
+                child: Column(
+                  children: [
+                    Gaps.v10,
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: Sizes.size40),
+                      child: Text(
+                        "Create your account",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: Sizes.size32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Gaps.v40,
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                              hintText: 'Name',
+                              suffix: (_name.length >= 4)
+                                  ? const FaIcon(
+                                      FontAwesomeIcons.circleCheck,
+                                      color: Colors.green,
+                                      size: Sizes.size28,
+                                    )
+                                  : null,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _name = value; // 이름 상태 업데이트
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Name is required';
+                              }
+                              return null;
+                            },
+                          ),
+                          Gaps.v16,
+                          TextFormField(
+                            autocorrect: false,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                              hintText: 'Phone number or email address',
+                              suffix: (_isEmailValid(_email) == null &&
+                                      _email.isNotEmpty)
+                                  ? const FaIcon(
+                                      FontAwesomeIcons.circleCheck,
+                                      color: Colors.green,
+                                      size: Sizes.size28,
+                                    )
+                                  : null,
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _email = value; // 이메일 상태 업데이트
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Email is required';
+                              }
+                              return _isEmailValid(value);
+                            },
+                          ),
+                          Gaps.v16,
+                          TextFormField(
+                            autocorrect: false,
+                            decoration: InputDecoration(
+                              hintText: 'Date of birth',
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey.shade400,
+                                ),
+                              ),
+                              suffix: (_selectedDate != null)
+                                  ? const FaIcon(
+                                      FontAwesomeIcons.circleCheck,
+                                      color: Colors.green,
+                                      size: Sizes.size28,
+                                    )
+                                  : null,
+                            ),
+                            readOnly: true, // 텍스트 필드에서 입력을 막음
+                            onTap: () {
+                              // Date picker 활성화
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => SizedBox(
+                                  height: 300,
+                                  child: CupertinoDatePicker(
+                                    maximumDate: DateTime.now(),
+                                    initialDateTime:
+                                        _selectedDate ?? DateTime(2000, 1, 1),
+                                    mode: CupertinoDatePickerMode.date,
+                                    onDateTimeChanged: (date) {
+                                      setState(() {
+                                        _selectedDate = date;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
+                            controller: TextEditingController(
+                              text: _selectedDate != null
+                                  ? "${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}"
+                                  : '',
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Date of birth is required';
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: const Text(
-                'Next',
-                style: TextStyle(fontSize: 14), // 텍스트 크기
-              ),
             ),
-          ),
-        ]),
+            if (!_isSwitchOn)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.all(Sizes.size32),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                        width: 80,
+                        height: 40,
+                        child: ElevatedButton(
+                          onPressed: _isFormValid()
+                              ? () => _onExperinceTap(context)
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _isFormValid()
+                                ? Colors.black
+                                : Colors.grey.shade500,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                          ),
+                          child: Text(
+                            _isSwitchOn ? 'Sign up' : 'Next',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
+        bottomNavigationBar: (_isSwitchOn)
+            ? Padding(
+                padding: const EdgeInsets.all(Sizes.size40),
+                child: GestureDetector(
+                  onTap: () => (),
+                  child: const AuthBoutton(
+                    text: "Sign up",
+                    backGroudColor: Colors.blue,
+                    textColor: Colors.white,
+                  ),
+                ),
+              )
+            : null,
       ),
     );
   }
