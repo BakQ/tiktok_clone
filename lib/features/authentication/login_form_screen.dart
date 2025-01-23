@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/widgets/form_button.dart';
+import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 
 class LoginFormScreen extends StatefulWidget {
   const LoginFormScreen({super.key});
@@ -25,6 +26,11 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const InterestsScreen(),
+          ),
+        ); // MaterialPageRoute
       }
     }
   }
@@ -49,6 +55,9 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 ),
                 //속성을 통해 입력된 값이 유효한지 확인하는 간단한 검증 로직을 포함합니다.
                 validator: (value) {
+                  if (value != null && value.isEmpty) {
+                    return "Plase write your email";
+                  }
                   //return 'i dont like your email';
                   //return null 을 주면 이상없는게 된다.?
                   //validator에서 null을 반환하면 입력 값이 유효하다고 간주되며, 폼 검증이 성공하면 onSaved 함수가 호출되어 데이터를 저장할 수 있습니다.
@@ -66,7 +75,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   hintText: 'Password',
                 ),
                 validator: (value) {
-                  return 'wrong password';
+                  if (value != null && value.isEmpty) {
+                    return 'wrong password';
+                  }
+                  return null;
                 },
               ),
               Gaps.v28,
