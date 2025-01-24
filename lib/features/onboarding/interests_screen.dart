@@ -1,9 +1,45 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/onboarding/widgets/interest_button.dart';
 
-class InterestsScreen extends StatelessWidget {
+class InterestsScreen extends StatefulWidget {
   const InterestsScreen({super.key});
+
+  @override
+  State<InterestsScreen> createState() => _InterestsScreenState();
+}
+
+class _InterestsScreenState extends State<InterestsScreen> {
+  final ScrollController _scrollController = ScrollController();
+
+  bool _showTitle = false;
+
+  void _onScroll() {
+    if (_scrollController.offset > 110) {
+      if (_showTitle) return;
+      setState(() {
+        _showTitle = true;
+      });
+    } else {
+      setState(() {
+        _showTitle = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener((_onScroll));
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,95 +86,82 @@ class InterestsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Choose your interests",
+        title: AnimatedOpacity(
+          opacity: _showTitle ? 1 : 0,
+          duration: const Duration(milliseconds: 300),
+          child: const Text(
+            "Choose your interests",
+          ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: Sizes.size24,
-            right: Sizes.size24,
-            bottom: Sizes.size16,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Gaps.v32,
-              const Text(
-                "Choose your interests",
-                style: TextStyle(
-                  fontSize: Sizes.size40,
-                  fontWeight: FontWeight.bold,
+      body: Scrollbar(
+        //스크롤바를 만틈 컨트롤러 넣어줘야함
+        controller: _scrollController,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: Sizes.size24,
+              right: Sizes.size24,
+              bottom: Sizes.size16,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Gaps.v32,
+                const Text(
+                  "Choose your interests",
+                  style: TextStyle(
+                    fontSize: Sizes.size40,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              Gaps.v20,
-              const Text(
-                "Get better video recommendations",
-                style: TextStyle(
-                  fontSize: Sizes.size20,
+                Gaps.v20,
+                const Text(
+                  "Get better video recommendations",
+                  style: TextStyle(
+                    fontSize: Sizes.size20,
+                  ),
                 ),
-              ),
-              Gaps.v64,
-              Wrap(
-                // 세로 간격을 조절해준다.
-                runSpacing: 15,
-                //가로
-                spacing: 15,
-                children: [
-                  for (var interest in interests)
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: Sizes.size16,
-                        horizontal: Sizes.size24,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(
-                          Sizes.size32,
-                        ),
-                        border: Border.all(
-                          color: Colors.black, //withopacity(0.1)
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black38,
-                            blurRadius: 5,
-                            spreadRadius: 5,
-                          ),
-                        ],
-                      ),
-                      child: Text(interest,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                          )),
-                    ),
-                ],
-              ),
-            ],
+                Gaps.v64,
+                Wrap(
+                  // 세로 간격을 조절해준다.
+                  runSpacing: 15,
+                  //가로
+                  spacing: 15,
+                  children: [
+                    for (var interest in interests)
+                      InterestButton(interest: interest),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        elevation: 1,
+        height: 120,
+        elevation: 2,
         child: Padding(
           padding: const EdgeInsets.only(
-            bottom: Sizes.size16,
+            bottom: Sizes.size24,
             top: Sizes.size12,
-            left: Sizes.size24,
-            right: Sizes.size24,
-          ), // EdgeInsets.only
+            left: Sizes.size16,
+            right: Sizes.size16,
+          ),
           child: Container(
             padding: const EdgeInsets.symmetric(
-              vertical: Sizes.size20,
+              vertical: Sizes.size16 + Sizes.size2,
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
-            ), // BoxDecoration
+            ),
             child: const Text(
               'Next',
+              textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
+                fontWeight: FontWeight.w500,
                 fontSize: Sizes.size16,
               ),
             ),
