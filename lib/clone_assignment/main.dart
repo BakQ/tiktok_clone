@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/clone_assignment/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/onboarding/Interests_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/onboarding/interests_screen.dart';
 
 import '../constants/sizes.dart';
 
@@ -19,6 +19,7 @@ class XClone extends StatelessWidget {
       theme: ThemeData(
         //여기서 scaffold 색을 한번에 지정해줄수있다.
         scaffoldBackgroundColor: Colors.white,
+        primaryColor: Colors.blue,
         //appbar도 메인에서 전부 설정해줄수있다.
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
@@ -31,8 +32,7 @@ class XClone extends StatelessWidget {
               fontWeight: FontWeight.w600),
         ),
       ),
-      //home: const SignUpScreen(),
-      home: const InterestsScreen(),
+      home: const SignUpScreen(),
     );
   }
 }

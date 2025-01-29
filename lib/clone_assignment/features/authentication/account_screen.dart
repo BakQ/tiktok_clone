@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
 import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
+import 'package:tiktok_clone/clone_assignment/features/authentication/confirmation_code_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/authentication/experience_screen.dart';
 import 'package:tiktok_clone/clone_assignment/widgets/auth_boutton.dart';
 
@@ -34,7 +35,20 @@ class _AccountScreenState extends State<AccountScreen> {
     }
   }
 
-  String? _isEmailValid(String email) {
+  //메서드 앞에 언더바를 하면 private 접근자가 된다 플러터는 따로 접근자 변수가 없다 .
+  void _onSignUpTap(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OtpScreen(
+          name: _name,
+          email: _email,
+          birthday: _selectedDate.toString(),
+        ),
+      ),
+    ); // MaterialPageRoute
+  }
+
+  String? isEmailValid(String email) {
     if (email.isEmpty) return null;
     final regExp = RegExp(
         r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
@@ -44,21 +58,21 @@ class _AccountScreenState extends State<AccountScreen> {
     return null;
   }
 
-  bool _isFormValid() {
+  bool isFormValid() {
     return _name.length >= 4 &&
         _email.isNotEmpty &&
-        _isEmailValid(_email) == null &&
+        isEmailValid(_email) == null &&
         _selectedDate != null;
   }
 
-  void _onScaffoldTap() {
+  void onScaffoldTap() {
     FocusScope.of(context).unfocus();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _onScaffoldTap,
+      onTap: onScaffoldTap,
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
@@ -156,7 +170,7 @@ class _AccountScreenState extends State<AccountScreen> {
                                 ),
                               ),
                               hintText: 'Phone number or email address',
-                              suffix: (_isEmailValid(_email) == null &&
+                              suffix: (isEmailValid(_email) == null &&
                                       _email.isNotEmpty)
                                   ? const FaIcon(
                                       FontAwesomeIcons.circleCheck,
@@ -174,7 +188,7 @@ class _AccountScreenState extends State<AccountScreen> {
                               if (value == null || value.isEmpty) {
                                 return 'Email is required';
                               }
-                              return _isEmailValid(value);
+                              return isEmailValid(value);
                             },
                           ),
                           Gaps.v16,
@@ -247,11 +261,11 @@ class _AccountScreenState extends State<AccountScreen> {
                         width: 80,
                         height: 40,
                         child: ElevatedButton(
-                          onPressed: _isFormValid()
+                          onPressed: isFormValid()
                               ? () => _onExperinceTap(context)
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: _isFormValid()
+                            backgroundColor: isFormValid()
                                 ? Colors.black
                                 : Colors.grey.shade500,
                             shape: RoundedRectangleBorder(
@@ -277,7 +291,7 @@ class _AccountScreenState extends State<AccountScreen> {
             ? Padding(
                 padding: const EdgeInsets.all(Sizes.size40),
                 child: GestureDetector(
-                  onTap: () => (),
+                  onTap: () => _onSignUpTap(context),
                   child: const AuthBoutton(
                     text: "Sign up",
                     backGroudColor: Colors.blue,
