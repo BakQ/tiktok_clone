@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 
+import '../main_navigation/main_navigation_screen.dart';
+
 enum Direction { right, left }
 
 enum Page { first, second }
@@ -39,6 +41,16 @@ class _TutorialScreenState extends State<TutorialScreen> {
         _showingPage = Page.first;
       });
     }
+  }
+
+  void _onEnterAppTap() {
+    Navigator.of(context).pushAndRemoveUntil(
+        // pushAndRemoveUntil은 앞에 있었던 화면을 제거해주는 함수다.
+        MaterialPageRoute(
+          builder: (context) => const MainNavigationScreen(),
+        ),
+        (route) => false // 리턴값에 따라서 뒤로가기 버튼이 생길수도 있고 없을수도있다.
+        ); //
   }
 
   @override
@@ -102,7 +114,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
             duration: const Duration(milliseconds: 300),
             opacity: _showingPage == Page.first ? 0 : 1,
             child: CupertinoButton(
-              onPressed: () {},
+              onPressed: _onEnterAppTap,
               color: Theme.of(context).primaryColor,
               child: const Text('Enter the app!'),
             ),

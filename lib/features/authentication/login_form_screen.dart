@@ -26,11 +26,13 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_formKey.currentState != null) {
       if (_formKey.currentState!.validate()) {
         _formKey.currentState!.save();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const InterestsScreen(),
-          ),
-        ); // MaterialPageRoute
+        Navigator.of(context).pushAndRemoveUntil(
+            // pushAndRemoveUntil은 앞에 있었던 화면을 제거해주는 함수다.
+            MaterialPageRoute(
+              builder: (context) => const InterestsScreen(),
+            ),
+            (route) => false // 리턴값에 따라서 뒤로가기 버튼이 생길수도 있고 없을수도있다.
+            ); // MaterialPageRoute
       }
     }
   }

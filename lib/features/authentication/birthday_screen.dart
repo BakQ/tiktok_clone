@@ -35,11 +35,13 @@ class _EmailScreenState extends State<BirthdayScreen> {
 
   //StatefulWidget 위젯에서는 context를 안받아도 된다 context는 항상 static처럼존재한다.
   void onNextTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const InterestsScreen(),
-      ),
-    ); // MaterialPageRoute
+    Navigator.of(context).pushAndRemoveUntil(
+        // pushAndRemoveUntil은 앞에 있었던 화면을 제거해주는 함수다.
+        MaterialPageRoute(
+          builder: (context) => const InterestsScreen(),
+        ),
+        (route) => false // 리턴값에 따라서 뒤로가기 버튼이 생길수도 있고 없을수도있다.
+        ); // MateerialPageRoute
   }
 
   void _setTextFieldDate(DateTime date) {
