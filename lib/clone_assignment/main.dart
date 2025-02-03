@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/clone_assignment/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/main_navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/onboarding/interests_screen.dart';
 
 import '../constants/sizes.dart';
@@ -32,7 +33,8 @@ class XClone extends StatelessWidget {
               fontWeight: FontWeight.w600),
         ),
       ),
-      home: const SignUpScreen(),
+      //home: const SignUpScreen(),
+      home: const MainNavigationScreen(),
     );
   }
 }
