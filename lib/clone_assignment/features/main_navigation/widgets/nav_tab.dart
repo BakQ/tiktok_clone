@@ -8,12 +8,10 @@ class NavTap extends StatelessWidget {
       {super.key,
       required this.isSelected,
       required this.icon,
-      required this.onTap,
-      required this.selectedIcon});
+      required this.onTap});
 
   final bool isSelected;
   final IconData icon;
-  final IconData selectedIcon;
   final Function onTap;
 
   @override
@@ -31,8 +29,8 @@ class NavTap extends StatelessWidget {
                   MainAxisSize.min, // 강의때랑 다른거같다. 크기가 최대로 안잡힌다. 알아서 잡힌다.
               children: [
                 FaIcon(
-                  isSelected ? selectedIcon : icon,
-                  color: Colors.black,
+                  icon,
+                  color: isSelected ? Colors.black : Colors.grey,
                   size: Sizes.size28,
                 ),
               ],
