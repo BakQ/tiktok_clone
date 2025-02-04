@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
+import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
 
 class HomePageScreen extends StatelessWidget {
-  const HomePageScreen({super.key});
+  final ScrollController scrollController;
+  const HomePageScreen({super.key, required this.scrollController});
 
   @override
   Widget build(BuildContext context) {
     final List<Post> posts = [
       Post(
         username: 'pubity',
-        profilePic: 'https://via.placeholder.com/50',
+        profilePic: 'https://i.pravatar.cc/150?img=2',
         timeAgo: '2m',
         text: 'Vine after seeing the Threads logo unveiled',
         imageUrls: [
@@ -22,36 +24,42 @@ class HomePageScreen extends StatelessWidget {
       ),
       Post(
         username: 'thetinderblog',
-        profilePic: 'https://via.placeholder.com/50',
+        profilePic: 'https://i.pravatar.cc/150?img=3',
         timeAgo: '5m',
         text: 'Elon alone on Twitter right now...',
         imageUrls: [
-          'https://picsum.photos/300/500',
-          'https://picsum.photos/300/600'
+          'https://picsum.photos/400/300?1',
+          'https://picsum.photos/400/300?2'
         ],
         likes: 512,
         replies: 78,
       ),
       Post(
         username: 'park',
-        profilePic: 'https://via.placeholder.com/50',
+        profilePic: 'https://i.pravatar.cc/150?img=6',
         timeAgo: '5m',
         text: 'Elon alone on Twitter right now...',
         imageUrls: [
-          'https://picsum.photos/300/500',
-          'https://picsum.photos/300/600'
+          'https://picsum.photos/300/500?1',
+          'https://picsum.photos/300/500?2',
+          'https://picsum.photos/300/500?3',
+          'https://picsum.photos/300/600?4'
         ],
         likes: 512,
         replies: 78,
       ),
     ];
 
-    return Scaffold(
-      body: ListView.builder(
-        itemCount: posts.length,
-        itemBuilder: (context, index) {
-          return PostContainer(post: posts[index]);
-        },
+    return Scrollbar(
+      controller: scrollController,
+      child: Scaffold(
+        body: ListView.builder(
+          controller: scrollController,
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            return PostContainer(post: posts[index]);
+          },
+        ),
       ),
     );
   }
@@ -91,10 +99,50 @@ class PostContainer extends StatelessWidget {
         children: [
           Column(
             children: [
-              CircleAvatar(
-                backgroundImage: NetworkImage(post.profilePic),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          post.profilePic,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                  // Inner circle (with a plus icon)
+                  Positioned(
+                    top: 22,
+                    left: 22,
+                    child: Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2.5,
+                        ),
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Align(
+                        alignment: Alignment.center,
+                        child: FaIcon(
+                          FontAwesomeIcons.plus,
+                          color: Colors.white,
+                          size: 12,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
+              Gaps.v8,
               // 세로선이 이미지 크기에 맞게 조절되도록 ClipRRect 내부에서 Positioned 사용
               Container(
                 width: 2,
@@ -106,7 +154,7 @@ class PostContainer extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(width: 8),
+          Gaps.h8,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,18 +179,32 @@ class PostContainer extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(post.text),
                 const SizedBox(height: 8),
-                SizedBox(
-                  height: 300,
-                  child: PageView.builder(
-                    itemCount: post.imageUrls.length,
-                    itemBuilder: (context, index) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Image.network(post.imageUrls[index]),
-                      );
-                    },
+                if (post.imageUrls.isNotEmpty)
+                  Column(
+                    children: [
+                      Gaps.v10,
+                      SizedBox(
+                        height: Sizes.size96 +
+                            Sizes.size96 +
+                            Sizes.size20, // 이미지 높이 지정
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: post.imageUrls.length,
+                          itemBuilder: (context, imgIndex) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.only(right: Sizes.size10),
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(Sizes.size8),
+                                child: Image.network(post.imageUrls[imgIndex]),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ),
                 Gaps.v12,
                 const Row(
                   children: [
@@ -163,8 +225,6 @@ class PostContainer extends StatelessWidget {
                     const Text('.'),
                     Gaps.h8,
                     Text('${post.likes} likes'),
-                    const Spacer(),
-                    const Icon(Icons.share),
                   ],
                 ),
               ],

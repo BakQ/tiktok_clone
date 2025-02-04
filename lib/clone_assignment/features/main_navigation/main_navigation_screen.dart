@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/home_page_screen.dart';
-import 'package:tiktok_clone/features/main_navigation/stf_screen.dart';
 
 import 'widgets/nav_tab.dart';
 
@@ -71,12 +70,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   void _onScroll() {
     print(_scrollController.offset);
-    if (_scrollController.offset > 110) {
-      if (_showTitle) return;
+    if (_scrollController.offset < 110) {
       setState(() {
         _showTitle = true;
       });
     } else {
+      if (!_showTitle) return;
       setState(() {
         _showTitle = false;
       });
@@ -99,10 +98,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: FaIcon(
-            FontAwesomeIcons.threads,
-            size: Sizes.size32,
+        title: AnimatedOpacity(
+          opacity: _showTitle ? 1 : 0,
+          duration: const Duration(milliseconds: 300),
+          child: const Center(
+            child: FaIcon(
+              FontAwesomeIcons.threads,
+              size: Sizes.size32,
+            ),
           ),
         ),
       ),
@@ -117,7 +120,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           children: [
             Offstage(
               offstage: _selectedIndex != 0,
-              child: const HomePageScreen(),
+              child: HomePageScreen(scrollController: _scrollController),
             ),
             Offstage(
               offstage: _selectedIndex != 1,
