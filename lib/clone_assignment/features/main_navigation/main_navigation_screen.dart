@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/home_page_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/main_navigation/write_screen.dart';
 
 import 'widgets/nav_tab.dart';
 
@@ -80,6 +81,19 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         _showTitle = false;
       });
     }
+  }
+  // ✅ 네비게이션에서 WriteScreen을 바텀시트로 띄우는 함수
+
+  void showWriteScreen(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: false, //Flutter 3.9 이상이면 자동 핸들 추가 가능
+      builder: (context) => const WriteScreen(),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
+    );
   }
 
   @override
@@ -161,7 +175,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               NavTap(
                 isSelected: _selectedIndex == 2,
                 icon: FontAwesomeIcons.shareFromSquare,
-                onTap: () => _onTap(2),
+                onTap: () => showWriteScreen(context),
               ),
               NavTap(
                 isSelected: _selectedIndex == 3,

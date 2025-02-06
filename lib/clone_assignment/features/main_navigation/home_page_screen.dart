@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
 import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
+import 'package:tiktok_clone/clone_assignment/features/main_navigation/widgets/more_bottom_sheet.dart';
 
 class HomePageScreen extends StatelessWidget {
   final ScrollController scrollController;
@@ -90,6 +91,17 @@ class PostContainer extends StatelessWidget {
 
   const PostContainer({super.key, required this.post});
 
+  _onTapEllipsis(BuildContext context) {
+    showModalBottomSheet(
+      showDragHandle: true, //Flutter 3.9 이상이면 자동 핸들 추가 가능
+      context: context,
+      builder: (context) => const OptionsBottomSheet(),
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.5,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -173,7 +185,10 @@ class PostContainer extends StatelessWidget {
                       style: const TextStyle(color: Colors.grey),
                     ),
                     Gaps.h20,
-                    const FaIcon(FontAwesomeIcons.ellipsis),
+                    GestureDetector(
+                      onTap: () => _onTapEllipsis(context),
+                      child: const FaIcon(FontAwesomeIcons.ellipsis),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 4),
