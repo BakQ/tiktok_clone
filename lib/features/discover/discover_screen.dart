@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 
 final tabs = [
@@ -60,13 +62,71 @@ class DiscoverScreen extends StatelessWidget {
                 //세로간격
                 mainAxisSpacing: Sizes.size10,
                 //컬럼들 비율설정
-                childAspectRatio: 9 / 16,
+                childAspectRatio: 9 / 21,
               ),
-              itemBuilder: (context, index) => Container(
-                color: Colors.teal,
-                child: Center(
-                  child: Text("$index"),
-                ),
+              itemBuilder: (context, index) => Column(
+                children: [
+                  //원하는 비율로 지정해줄수있는 위젯
+                  AspectRatio(
+                    aspectRatio: 9 / 16,
+                    child: FadeInImage.assetNetwork(
+                      fit: BoxFit.cover,
+                      //이미지가 다운로드 되기전에 보여주는 이미지 지정
+                      placeholder: "assets/images/placeholder.png",
+                      //아마자 가져오기
+                      image:
+                          "https://images.unsplash.com/photo-1673844969019-c99b0c933e90?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1480&q=80",
+                    ),
+                  ),
+                  Gaps.v10,
+                  const Text(
+                    "This is a very long caption for my tiktok that im upload just now currently.",
+                    //어떻게 자를것인가
+                    overflow: TextOverflow.ellipsis,
+                    //텍스트 맥스라인
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: Sizes.size16 + Sizes.size2,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Gaps.v8,
+                  //자식 텍스트에 한번에 스타일 적용시키는 위젯
+                  DefaultTextStyle(
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    child: Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 12,
+                          backgroundImage: NetworkImage(
+                            "https://avatars.githubusercontent.com/u/3612017",
+                          ),
+                        ),
+                        Gaps.h4,
+                        const Expanded(
+                          child: Text(
+                            "My avatar is going to be very long",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Gaps.h4,
+                        FaIcon(
+                          FontAwesomeIcons.heart,
+                          size: Sizes.size16,
+                          color: Colors.grey.shade600,
+                        ),
+                        Gaps.h2,
+                        const Text(
+                          "2.5M",
+                        )
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
             for (var tab in tabs.skip(1))
