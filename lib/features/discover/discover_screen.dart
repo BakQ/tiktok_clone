@@ -79,6 +79,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         body: TabBarView(
           children: [
             GridView.builder(
+              //드래그 할때 키보드 사라지게하는거
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               itemCount: 20,
               padding: const EdgeInsets.all(
