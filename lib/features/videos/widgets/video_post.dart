@@ -101,6 +101,10 @@ class _VideoPostState extends State<VideoPost>
         !_videoPlayerController.value.isPlaying) {
       _videoPlayerController.play();
     }
+    // Offstage 사용해서 dispose 안됌 그래서 다른탭 들어가면 멈추게 함
+    if (_videoPlayerController.value.isPlaying && info.visibleFraction == 0) {
+      _onTogglePause();
+    }
   }
 
   // 재생 중이면 일시정지, 일시정지면 재생
