@@ -24,6 +24,9 @@ class TikTokApp extends StatelessWidget {
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFFE9435A),
         ),
+        //클릭시 표현되는거 끄는거 적용했는데 왜나는 계속나오지 ?
+        splashColor: Colors.transparent,
+        //highlightColor: Colors.transparent,
         //appbar도 메인에서 전부 설정해줄수있다.
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
