@@ -84,7 +84,6 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVideoChange() {
-    if (!mounted) return;
     // 초기화 되었는지
     if (_videoPlayerController.value.isInitialized) {
       // 영상 길이가 현재 영상 내 위치와 같은지
