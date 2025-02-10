@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tiktok_clone/constants/sizes.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -14,10 +15,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       slivers: [
         // SliverAppBar: 스크롤 가능한 AppBar로, 사용자가 스크롤할 때 다양한 동작을 설정할 수 있음
         SliverAppBar(
-          // snap: true - 사용자가 스크롤을 멈추면 AppBar가 자동으로 접히거나 펼쳐짐
-          snap: true,
-          // floating: true - AppBar가 리스트를 스크롤할 때 위로 사라지지만, 다시 스크롤하면 즉시 나타남
-          floating: true,
           // pinned: true - AppBar가 완전히 사라지지 않고, 최소 높이만큼 화면에 남아 있도록 고정됨
           pinned: true,
           // stretch: true - 리스트를 끝까지 당겼을 때 AppBar가 확장되며 배경 효과를 줌
@@ -58,7 +55,35 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
           ),
           itemExtent: 100, // 각 아이템의 높이를 100으로 고정
-        )
+        ),
+        // SliverGrid: 스크롤 가능한 그리드 레이아웃을 생성하는 위젯
+        SliverGrid(
+          // SliverChildBuilderDelegate를 사용하여 동적으로 리스트 아이템을 생성
+          delegate: SliverChildBuilderDelegate(
+            // 총 50개의 아이템을 생성
+            childCount: 50,
+            // 각 아이템을 생성하는 빌더 함수
+            (context, index) => Container(
+              // 각 아이템의 배경색을 파란색 계열로 지정 (0~8 사이의 색상 반복)
+              color: Colors.blue[100 * (index % 9)],
+              child: Align(
+                alignment: Alignment.center, // 텍스트를 중앙 정렬
+                child: Text("Item $index"), // 아이템 번호 표시
+              ),
+            ),
+          ),
+          // gridDelegate: 그리드의 배치 규칙을 정의
+          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+            // 각 아이템의 최대 가로 크기 (100픽셀을 초과하지 않도록 조절)
+            maxCrossAxisExtent: 100,
+            // 아이템 사이의 수직 간격 (main axis 방향)
+            mainAxisSpacing: Sizes.size20,
+            // 아이템 사이의 수평 간격 (cross axis 방향)
+            crossAxisSpacing: Sizes.size20,
+            // 아이템의 가로:세로 비율 (1:1 정사각형)
+            childAspectRatio: 1,
+          ),
+        ),
       ],
     );
   }
