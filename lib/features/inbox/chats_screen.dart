@@ -31,6 +31,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
     if (_key.currentState != null) {
       _key.currentState!.removeItem(
         index,
+        //삭제할때 보여주는거
         (context, animation) => SizeTransition(
           sizeFactor: animation,
           child: Container(
