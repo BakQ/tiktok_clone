@@ -15,8 +15,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       slivers: [
         // SliverAppBar: 스크롤 가능한 AppBar로, 사용자가 스크롤할 때 다양한 동작을 설정할 수 있음
         SliverAppBar(
-          // pinned: true - AppBar가 완전히 사라지지 않고, 최소 높이만큼 화면에 남아 있도록 고정됨
-          pinned: true,
           // stretch: true - 리스트를 끝까지 당겼을 때 AppBar가 확장되며 배경 효과를 줌
           stretch: true,
           // AppBar의 배경색 지정
@@ -42,6 +40,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             title: const Text("Hello!"),
           ),
         ),
+        const SliverToBoxAdapter(
+          child: Column(
+            children: [
+              CircleAvatar(
+                backgroundColor: Colors.red,
+                radius: 20,
+              )
+            ],
+          ),
+        ),
         // 리스트 아이템을 SliverFixedExtentList를 사용하여 배치
         SliverFixedExtentList(
           delegate: SliverChildBuilderDelegate(
@@ -55,6 +63,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
           ),
           itemExtent: 100, // 각 아이템의 높이를 100으로 고정
+        ),
+        SliverPersistentHeader(
+          delegate: CustomDelegate(),
+          floating: true,
         ),
         // SliverGrid: 스크롤 가능한 그리드 레이아웃을 생성하는 위젯
         SliverGrid(
@@ -86,5 +98,42 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
       ],
     );
+  }
+}
+
+// SliverPersistentHeaderDelegate를 상속하여 커스텀 고정 헤더를 만듦
+class CustomDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Colors.indigo, // 배경색을 남색(Indigo)으로 설정
+      child: const FractionallySizedBox(
+        heightFactor: 1, // 부모 컨테이너 높이의 100%를 차지하도록 설정
+        child: Center(
+          child: Text(
+            'Title!!!!!', // 헤더에 표시될 제목
+            style: TextStyle(
+              color: Colors.white, // 텍스트 색상을 흰색으로 설정
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // maxExtent: 헤더의 최대 높이 (스크롤 확장 시 최대 높이)
+  @override
+  double get maxExtent => 150;
+
+  // minExtent: 헤더의 최소 높이 (스크롤 시 축소될 때 최소 높이)
+  @override
+  double get minExtent => 80;
+
+  // shouldRebuild: 기존 delegate와 비교하여 다시 빌드할지 여부를 결정
+  // 여기서는 `false`로 설정하여 항상 동일한 형태를 유지
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
+    return false;
   }
 }
