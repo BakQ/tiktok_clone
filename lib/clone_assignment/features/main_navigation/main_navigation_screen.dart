@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/home_page_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/write_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/user_profile_screen.dart';
 
 import 'widgets/nav_tab.dart';
 
@@ -17,7 +17,7 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  int _selectedIndex = 0;
+  int _selectedIndex = 4;
   bool _showTitle = false;
 
   final screens = [
@@ -111,18 +111,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: AnimatedOpacity(
-          opacity: _showTitle ? 1 : 0,
-          duration: const Duration(milliseconds: 300),
-          child: const Center(
-            child: FaIcon(
-              FontAwesomeIcons.threads,
-              size: Sizes.size32,
-            ),
-          ),
-        ),
-      ),
       //화면들 state가 사라지는 방법 계속새로고침임
       //body: screens.elementAt(_selectedIndex),
       //Stack 위젯으로는 다생기고 화면을 보여주고 안보여주고함 stack이 메모리말하는듯
@@ -149,9 +137,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               child: screens[_selectedIndex],
             ),
             Offstage(
-              offstage: _selectedIndex != 4,
-              child: screens[_selectedIndex],
-            ),
+                offstage: _selectedIndex != 4, child: const ProfileScreen()),
           ],
         ),
       ),
