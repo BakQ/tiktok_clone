@@ -96,6 +96,7 @@ class _VideoPostState extends State<VideoPost>
 
   // Widget 이 다 보이는데, 동영상이 재생 중이 아니면 재생하기
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!mounted) return;
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
