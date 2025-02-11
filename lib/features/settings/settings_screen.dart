@@ -6,33 +6,35 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 앱의 기본 구조를 제공하는 Scaffold
+      // 앱의 기본적인 레이아웃을 제공하는 Scaffold
       appBar: AppBar(
-        title: const Text('Settings'), // 상단 앱바 제목
+        title: const Text('Settings'), // 상단 앱바의 제목
       ),
 
-      // 리스트를 휠(롤러) 형태로 스크롤할 수 있는 ListWheelScrollView 사용
-      body: ListWheelScrollView(
-        diameterRatio: 1.5, // 휠의 곡률을 결정 (값이 클수록 더 평평한 원형 리스트가 됨)
-        offAxisFraction: 1.5, // 리스트의 중심에서 얼마나 이동할지를 조정 (양수: 오른쪽, 음수: 왼쪽)
-        itemExtent: 200, // 각 아이템의 높이 지정 (픽셀 단위)
-
+      // 세팅 화면의 내용 (리스트 형태)
+      body: ListView(
         children: [
-          for (var x in [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1])
-            FractionallySizedBox(
-              widthFactor: 1, // 부모의 100% 너비 차지
-              child: Container(
-                color: Colors.teal, // 배경색 지정
-                alignment: Alignment.center, // 텍스트 중앙 정렬
-                child: const Text(
-                  'Pick me', // 표시될 텍스트
-                  style: TextStyle(
-                    color: Colors.white, // 텍스트 색상 흰색
-                    fontSize: 39, // 폰트 크기
-                  ),
-                ),
+          // 리스트의 한 항목 (ListTile)
+          ListTile(
+            // flutter showAboutDialog 가 라이센서에 대한 정보를 다만들어준다 .
+            onTap: () => showAboutDialog(
+              context: context, // 다이얼로그를 표시할 컨텍스트
+              applicationVersion: "1.0", // 앱 버전 정보
+              applicationLegalese:
+                  "All rights reserved. Please don't copy me.", // 저작권 관련 안내
+            ),
+            title: const Text(
+              "About", // 항목 제목
+              style: TextStyle(
+                fontWeight: FontWeight.w600, // 글자 두껍게 설정
               ),
             ),
+            subtitle: const Text("About this app....."),
+          ),
+
+          // Flutter에서 기본 제공하는 앱 정보 타일
+
+          const AboutListTile(),
         ],
       ),
     );
