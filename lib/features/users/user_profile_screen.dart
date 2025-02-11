@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/users/widgets/persistent_tab_bar.dart';
 
 class UserProfileScreen extends StatefulWidget {
@@ -12,6 +13,14 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  void _onGearPressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const SettingsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -27,7 +36,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 title: const Text('니꼬'), // 앱바 제목
                 actions: [
                   IconButton(
-                    onPressed: () {}, // 설정 버튼 클릭 시 실행할 함수 (현재 비어 있음)
+                    onPressed: _onGearPressed, // 설정 버튼 클릭 시 실행할 함수 (현재 비어 있음)
                     icon: const FaIcon(
                       FontAwesomeIcons.gear, // FontAwesome 아이콘 (톱니바퀴)
                       size: Sizes.size20,
