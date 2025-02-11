@@ -146,6 +146,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
               );
             },
           ),
+          // ✅ iOS 스타일의 로그아웃 모달 (하단에서 슬라이드 업)
+          ListTile(
+            title: const Text("Log out (iOS / Bottom)"), // 리스트 제목
+            textColor: Colors.red, // 텍스트 색상 (빨간색)
+            onTap: () {
+              // 📌 iOS 스타일의 액션 시트 모달 표시 (하단에서 올라옴)
+              showCupertinoModalPopup(
+                context: context, // 현재 컨텍스트
+                builder: (context) => CupertinoActionSheet(
+                  title: const Text("Are you sure?"), // 모달 제목
+                  message: const Text("Please dooooont gooooo"), // 설명 메시지
+
+                  // 버튼 리스트 (액션 목록)
+                  actions: [
+                    // ✅ 기본 액션 버튼 (로그아웃 취소)
+                    CupertinoActionSheetAction(
+                      isDefaultAction: true, // 기본 강조 스타일 적용
+                      onPressed: () => Navigator.of(context).pop(), // 모달 닫기
+                      child: const Text("Not log out"), // 버튼 텍스트
+                    ),
+
+                    // ✅ 파괴적 액션 버튼 (로그아웃 실행)
+                    CupertinoActionSheetAction(
+                      isDestructiveAction: true, // 빨간색 강조 (위험한 액션 표시)
+                      onPressed: () => Navigator.of(context).pop(), // 모달 닫기
+                      child: const Text("Yes plz."), // 버튼 텍스트
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
 
           // ✅ 기본적인 앱 정보 표시 (버전, 라이선스 등)
           const AboutListTile(
