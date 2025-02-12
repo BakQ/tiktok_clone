@@ -27,11 +27,11 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
 
   void _onPageChanged(int page) {
     // 애니메이션과 함께 페이지 이동
-    _pageController.animateToPage(
+    /*  _pageController.animateToPage(
       page, // 현재 페이지 파라미터
       duration: _scrollDuration,
       curve: _scrollCurve,
-    );
+    );*/
 
     if (page == _itemCount - 1) {
       _itemCount = _itemCount + 4;

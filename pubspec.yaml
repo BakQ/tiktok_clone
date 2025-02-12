@@ -39,7 +39,11 @@ dependencies:
   faker: ^2.2.0
   video_player: 2.4.10
   visibility_detector: 0.3.3
-  
+  camera: ^0.11.0+2
+  permission_handler: ^11.3.1
+  google_fonts: 4.0.1
+
+  go_router: 6.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
