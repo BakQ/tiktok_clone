@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
+import 'package:tiktok_clone/clone_assignment/features/videos/video_recording_screen.dart';
 
 class WriteScreen extends StatefulWidget {
   const WriteScreen({super.key});
@@ -12,6 +15,7 @@ class WriteScreen extends StatefulWidget {
 class _WriteScreenState extends State<WriteScreen> {
   final TextEditingController _controller = TextEditingController();
   bool _isSendEnabled = false;
+  File? _selectedImage; // 선택한 이미지 저장
 
   @override
   void initState() {
@@ -38,6 +42,26 @@ class _WriteScreenState extends State<WriteScreen> {
       // 작성한 내용을 처리하는 로직 추가 가능
       Navigator.pop(context, _controller.text);
     }
+  }
+
+  Future<void> _onPostVideoButtonTap() async {
+    final selectedImage = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const VideoRecordingScreen(),
+      ),
+    );
+
+    if (selectedImage != null && selectedImage is File) {
+      setState(() {
+        _selectedImage = selectedImage;
+      });
+    }
+  }
+
+  void _removeImage() {
+    setState(() {
+      _selectedImage = null;
+    });
   }
 
   @override
@@ -98,6 +122,39 @@ class _WriteScreenState extends State<WriteScreen> {
                       ),
                     ),
                     // 텍스트 입력창 (힌트 텍스트: Start a thread...)
+                    if (_selectedImage != null) // 이미지가 있으면 표시
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Stack(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.file(
+                                _selectedImage!,
+                                height: 300,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Positioned(
+                              top: 8,
+                              right: 8,
+                              child: GestureDetector(
+                                onTap: _removeImage,
+                                child: const CircleAvatar(
+                                  backgroundColor: Colors.black54,
+                                  radius: 16,
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 18,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     TextField(
                       controller: _controller,
                       textCapitalization: TextCapitalization.none,
@@ -112,9 +169,12 @@ class _WriteScreenState extends State<WriteScreen> {
                       maxLines: null,
                     ),
                     Gaps.v10,
-                    const FaIcon(
-                      FontAwesomeIcons.paperclip,
-                      color: Colors.grey,
+                    GestureDetector(
+                      onTap: _onPostVideoButtonTap,
+                      child: const FaIcon(
+                        FontAwesomeIcons.paperclip,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
