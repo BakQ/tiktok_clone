@@ -15,15 +15,19 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
   // ✅ 카메라 및 마이크 권한 상태 저장 (기본값: false)
   bool _hasPermission = false;
 
+  // ✅ 전면/후면 카메라 상태 (기본값: 후면 카메라)
   bool _isSelfieMode = false;
+
+  // ✅ 현재 플래시 모드 상태 저장
+  late FlashMode _flashMode;
+
+  // ✅ 카메라 컨트롤러 (카메라 조작 객체)
   late CameraController _cameraController;
 
   // 📌 카메라 초기화 함수 (전면/후면 카메라 선택 가능)
   Future<void> initCamera() async {
     final cameras = await availableCameras(); // 사용 가능한 카메라 목록 가져오기
-    if (cameras.isEmpty) {
-      return; // 사용 가능한 카메라가 없으면 함수 종료
-    }
+    if (cameras.isEmpty) return; // 사용 가능한 카메라가 없으면 함수 종료
 
     // ✅ _isSelfieMode 값에 따라 전면/후면 카메라 선택
     _cameraController = CameraController(
@@ -32,6 +36,8 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
     );
 
     await _cameraController.initialize(); // 카메라 초기화
+
+    _flashMode = _cameraController.value.flashMode; // 현재 플래시 모드 저장
   }
 
   // 📌 카메라 및 마이크 권한 요청 함수
@@ -67,6 +73,13 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
     setState(() {}); // UI 갱신
   }
 
+  // 📌 플래시 모드 변경 함수
+  Future<void> _setFlashMode(FlashMode newFlashMode) async {
+    await _cameraController.setFlashMode(newFlashMode); // 새로운 플래시 모드 설정
+    _flashMode = newFlashMode; // 상태 업데이트
+    setState(() {}); // UI 갱신
+  }
+
   // 📌 UI 렌더링
   @override
   Widget build(BuildContext context) {
@@ -96,16 +109,69 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen> {
                 children: [
                   CameraPreview(_cameraController), // ✅ 카메라 미리보기
 
-                  // ✅ 전면/후면 카메라 전환 버튼
+                  // ✅ 전면/후면 카메라 전환 및 플래시 설정 버튼 그룹
                   Positioned(
                     top: Sizes.size32, // 화면 위쪽에 위치
-                    left: Sizes.size20, // 왼쪽 정렬
-                    child: IconButton(
-                      color: Colors.white, // 버튼 색상 (흰색)
-                      onPressed: _toggleSelfieMode, // 전환 함수 실행
-                      icon: const Icon(
-                        Icons.cameraswitch, // 카메라 전환 아이콘
-                      ),
+                    right: Sizes.size20,
+                    child: Column(
+                      children: [
+                        // 🔄 카메라 전환 버튼 (전면 ↔ 후면)
+                        IconButton(
+                          color: Colors.white,
+                          onPressed: _toggleSelfieMode,
+                          icon: const Icon(
+                            Icons.cameraswitch,
+                          ),
+                        ),
+                        Gaps.v10,
+
+                        // 🔦 플래시 OFF 버튼
+                        IconButton(
+                          color: _flashMode == FlashMode.off
+                              ? Colors.amber.shade200
+                              : Colors.white,
+                          onPressed: () => _setFlashMode(FlashMode.off),
+                          icon: const Icon(
+                            Icons.flash_off_rounded,
+                          ),
+                        ),
+                        Gaps.v10,
+
+                        // 🔥 플래시 ON (항상 켜기) 버튼
+                        IconButton(
+                          color: _flashMode == FlashMode.always
+                              ? Colors.amber.shade200
+                              : Colors.white,
+                          onPressed: () => _setFlashMode(FlashMode.always),
+                          icon: const Icon(
+                            Icons.flash_on_rounded,
+                          ),
+                        ),
+                        Gaps.v10,
+
+                        // 🤖 플래시 AUTO 버튼
+                        IconButton(
+                          color: _flashMode == FlashMode.auto
+                              ? Colors.amber.shade200
+                              : Colors.white,
+                          onPressed: () => _setFlashMode(FlashMode.auto),
+                          icon: const Icon(
+                            Icons.flash_auto_rounded,
+                          ),
+                        ),
+                        Gaps.v10,
+
+                        // 🔦 플래시 TORCH 모드 (손전등처럼 사용)
+                        IconButton(
+                          color: _flashMode == FlashMode.torch
+                              ? Colors.amber.shade200
+                              : Colors.white,
+                          onPressed: () => _setFlashMode(FlashMode.torch),
+                          icon: const Icon(
+                            Icons.flashlight_on_rounded,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
