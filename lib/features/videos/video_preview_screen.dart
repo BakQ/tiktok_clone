@@ -1,14 +1,18 @@
-import 'dart:io'; // 파일 시스템을 사용하기 위한 패키지
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart'; // 비디오 플레이어 패키지
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:saver_gallery/saver_gallery.dart';
+
+import 'package:video_player/video_player.dart';
 
 class VideoPreviewScreen extends StatefulWidget {
-  // ✅ 촬영된 비디오 파일을 전달받는 변수
   final XFile video;
+
   const VideoPreviewScreen({
     super.key,
-    required this.video, // 필수 파라미터
+    required this.video,
   });
 
   @override
@@ -16,40 +20,59 @@ class VideoPreviewScreen extends StatefulWidget {
 }
 
 class _VideoPreviewScreenState extends State<VideoPreviewScreen> {
-  // ✅ 비디오 플레이어 컨트롤러
   late final VideoPlayerController _videoPlayerController;
 
-  // 📌 비디오 초기화 함수
+  bool _savedVideo = false;
+
   Future<void> _initVideo() async {
     _videoPlayerController = VideoPlayerController.file(
-      File(widget.video.path), // 전달받은 비디오 파일 경로
+      File(widget.video.path),
     );
 
-    await _videoPlayerController.initialize(); // 비디오 로드
-    await _videoPlayerController.setLooping(true); // 반복 재생 설정
-    await _videoPlayerController.play(); // 자동 재생
+    await _videoPlayerController.initialize();
+    await _videoPlayerController.setLooping(true);
+    await _videoPlayerController.play();
 
-    setState(() {}); // UI 갱신
+    setState(() {});
   }
 
-  // 📌 위젯이 처음 생성될 때 실행
   @override
   void initState() {
     super.initState();
-    _initVideo(); // 비디오 초기화
+    _initVideo();
   }
 
-  // 📌 UI 렌더링
+  Future<void> _saveToGallery() async {
+    if (_savedVideo) return;
+
+    await SaverGallery.saveFile(
+        filePath: widget.video.path,
+        fileName: "TikTok Clone!",
+        skipIfExists: false);
+
+    _savedVideo = true;
+
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black, // 배경색 (검은색)
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: const Text('Preview video'), // 상단 앱바 타이틀
+        title: const Text('Preview video'),
+        actions: [
+          IconButton(
+            onPressed: _saveToGallery,
+            icon: FaIcon(_savedVideo
+                ? FontAwesomeIcons.check
+                : FontAwesomeIcons.download),
+          )
+        ],
       ),
       body: _videoPlayerController.value.isInitialized
-          ? VideoPlayer(_videoPlayerController) // ✅ 비디오 재생
-          : const Center(child: CircularProgressIndicator()), // 로딩 화면
+          ? VideoPlayer(_videoPlayerController)
+          : null,
     );
   }
 }
