@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/videos/video_preview_screen.dart';
 
 class VideoRecordingScreen extends StatefulWidget {
   const VideoRecordingScreen({super.key});
@@ -13,10 +14,10 @@ class VideoRecordingScreen extends StatefulWidget {
 
 class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     with TickerProviderStateMixin {
-  // ✅ 카메라 및 마이크 권한 상태 저장 (기본값: false)
+  // ✅ 카메라 및 마이크 권한 상태 저장
   bool _hasPermission = false;
 
-  // ✅ 전면/후면 카메라 모드 상태 (기본값: 후면 카메라)
+  // ✅ 전면/후면 카메라 상태 (기본값: 후면 카메라)
   bool _isSelfieMode = false;
 
   // ✅ 플래시 모드 상태 저장
@@ -25,11 +26,11 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   // ✅ 카메라 컨트롤러 (카메라 조작 객체)
   late CameraController _cameraController;
 
-  // ✅ 촬영 버튼 애니메이션 (크기 조절 애니메이션)
+  // ✅ 촬영 버튼 애니메이션 (크기 변화)
   late final AnimationController _buttonAnimationController =
       AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 200), // 0.2초 동안 애니메이션 실행
+    duration: const Duration(milliseconds: 200),
   );
 
   late final Animation<double> _buttonAnimation =
@@ -44,7 +45,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     upperBound: 1.0,
   );
 
-  // 📌 카메라 초기화 함수 (전면/후면 카메라 선택 가능)
+  // 📌 카메라 초기화 함수 (전면/후면 선택 가능)
   Future<void> initCamera() async {
     final cameras = await availableCameras();
     if (cameras.isEmpty) return;
@@ -52,9 +53,11 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     _cameraController = CameraController(
       cameras[_isSelfieMode ? 1 : 0], // true면 전면, false면 후면 카메라 사용
       ResolutionPreset.ultraHigh, // 카메라 해상도 설정 (초고화질)
+      enableAudio: false, // 오디오 녹음 비활성화
     );
 
     await _cameraController.initialize(); // 카메라 초기화
+    await _cameraController.prepareForVideoRecording(); // 비디오 녹화 준비
 
     _flashMode = _cameraController.value.flashMode; // 현재 플래시 모드 저장
   }
@@ -111,15 +114,42 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   }
 
   // 📌 녹화 시작 함수
-  void _startRecording(TapDownDetails _) {
+  Future<void> _startRecording(TapDownDetails _) async {
+    if (_cameraController.value.isRecordingVideo) return;
+
+    await _cameraController.startVideoRecording();
+
     _buttonAnimationController.forward(); // 버튼 크기 커짐 (애니메이션 시작)
     _progressAnimationController.forward(); // 녹화 진행 애니메이션 시작
   }
 
   // 📌 녹화 정지 함수
-  void _stopRecording() {
+  Future<void> _stopRecording() async {
+    if (!_cameraController.value.isRecordingVideo) return;
+
     _buttonAnimationController.reverse(); // 버튼 크기 원래대로
     _progressAnimationController.reset(); // 녹화 진행 상태 초기화
+
+    final video = await _cameraController.stopVideoRecording();
+
+    // ✅ 녹화된 비디오를 미리보기 화면으로 이동
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => VideoPreviewScreen(
+          video: video,
+        ),
+      ),
+    );
+  }
+
+  // 📌 리소스 정리 (메모리 누수 방지)
+  @override
+  void dispose() {
+    _progressAnimationController.dispose();
+    _buttonAnimationController.dispose();
+    _cameraController.dispose();
+    super.dispose();
   }
 
   // 📌 UI 렌더링
@@ -130,8 +160,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: !_hasPermission || !_cameraController.value.isInitialized
-            ? // ✅ 카메라가 아직 준비되지 않았다면 로딩 UI 표시
-            const Column(
+            ? const Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -184,14 +213,6 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                           onPressed: () => _setFlashMode(FlashMode.auto),
                           icon: const Icon(Icons.flash_auto_rounded),
                         ),
-                        Gaps.v10,
-                        IconButton(
-                          color: _flashMode == FlashMode.torch
-                              ? Colors.amber.shade200
-                              : Colors.white,
-                          onPressed: () => _setFlashMode(FlashMode.torch),
-                          icon: const Icon(Icons.flashlight_on_rounded),
-                        ),
                       ],
                     ),
                   ),
@@ -200,10 +221,10 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                   Positioned(
                     bottom: Sizes.size40,
                     child: GestureDetector(
-                      onTapDown: _startRecording, // 길게 누르면 녹화 시작
-                      onTapUp: (details) => _stopRecording(), // 손 떼면 녹화 중지
+                      onTapDown: _startRecording,
+                      onTapUp: (details) => _stopRecording(),
                       child: ScaleTransition(
-                        scale: _buttonAnimation, // 버튼 크기 애니메이션 적용
+                        scale: _buttonAnimation,
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
