@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart';
+import 'package:tiktok_clone/clone_assignment/utils.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -42,6 +43,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool dark = isDarkMode(context);
+    // 다크 모드 여부에 따른 색상 설정
+    final Color textColor = dark ? Colors.white : Colors.black;
+    final Color bgColor = dark ? Colors.black : Colors.white;
+    final Color dividerColor = Theme.of(context).dividerColor;
+
     // 옵션 데이터를 List<Map<String, dynamic>> 형태로 분리
     final List<Map<String, dynamic>> options = [
       {
@@ -50,7 +57,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
       {
         'icon': FontAwesomeIcons.bell,
-        'title': 'Notificatoins',
+        'title': 'Notifications',
       },
       {
         'icon': FontAwesomeIcons.lock,
@@ -77,31 +84,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
     ];
 
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
+        backgroundColor: bgColor,
+        elevation: 0,
         leadingWidth: 94,
         leading: TextButton.icon(
-          icon: const Icon(Icons.arrow_back_ios),
-          label: const Text('Back'),
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             backgroundColor: Colors.transparent,
-            foregroundColor: Colors.black,
+          ),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: textColor,
+          ),
+          label: Text(
+            'Back',
+            style: TextStyle(color: textColor),
           ),
         ),
-        title: const Text('Settings'),
+        title: Text(
+          'Settings',
+          style: TextStyle(color: textColor),
+        ),
       ),
       body: ListView(
         children: [
-          const Divider(),
+          Divider(color: dividerColor),
           // 옵션 리스트 생성 (toList()로 변환)
           ...options.map(
             (option) => ListTile(
-              leading: FaIcon(option['icon'] as IconData),
-              title: Text(option['title'] as String),
+              leading: FaIcon(
+                option['icon'] as IconData,
+                color: textColor,
+              ),
+              title: Text(
+                option['title'] as String,
+                style: TextStyle(color: textColor),
+              ),
               onTap: option['onTap'] as void Function()? ?? () {},
             ),
           ),
-          const Divider(),
+          Divider(color: dividerColor),
           ListTile(
             title: const Text(
               'Log out',

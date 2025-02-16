@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
+import 'package:tiktok_clone/clone_assignment/utils.dart';
 
 class PersistentTabBar extends SliverPersistentHeaderDelegate {
   final TabBar _tabBar;
@@ -22,8 +23,9 @@ class PersistentTabBar extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final bool dark = isDarkMode(context);
     return Container(
-      color: Colors.white,
+      color: dark ? Colors.black : Colors.white,
       child: _tabBar,
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/utils.dart'; // isDarkMode 함수가 정의되어 있다고 가정
 
 class PrivacyScreen extends StatefulWidget {
   const PrivacyScreen({super.key});
@@ -14,23 +15,29 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 옵션 항목들을 Map 형태로 정의합니다.
+    final bool dark = isDarkMode(context);
+    final Color textColor = dark ? Colors.white : Colors.black;
+    final Color bgColor = dark ? Colors.black : Colors.white;
+    final Color dividerColor =
+        dark ? Colors.grey.shade700 : Colors.grey.shade300;
+
+    // 옵션 항목들을 Map 형태로 정의 (trailing 위젯을 동적으로 생성)
     final List<Map<String, dynamic>> privacyOptions = [
       {
         'icon': FontAwesomeIcons.at,
         'title': 'Mentions',
-        'trailing': const Row(
+        'trailing': Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
               "Everyone",
-              style: TextStyle(fontSize: Sizes.size14),
+              style: TextStyle(fontSize: Sizes.size14, color: textColor),
             ),
-            SizedBox(width: 4),
+            const SizedBox(width: 4),
             FaIcon(
               FontAwesomeIcons.chevronRight,
               size: Sizes.size20,
-              color: Colors.grey,
+              color: dark ? Colors.grey.shade400 : Colors.grey,
             ),
           ],
         ),
@@ -50,65 +57,86 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
     ];
 
     return Scaffold(
+      backgroundColor: bgColor,
       appBar: AppBar(
+        backgroundColor: bgColor,
         leadingWidth: 94,
         leading: TextButton.icon(
-          icon: const FaIcon(Icons.arrow_back_ios),
-          label: const Text('Back'),
+          icon: FaIcon(Icons.arrow_back_ios, color: textColor),
+          label: Text('Back', style: TextStyle(color: textColor)),
           onPressed: () => Navigator.of(context).pop(),
           style: TextButton.styleFrom(
             backgroundColor: Colors.transparent,
-            foregroundColor: Colors.black,
+            foregroundColor: textColor,
           ),
         ),
-        title: const Text('Privacy'),
+        title: Text('Privacy', style: TextStyle(color: textColor)),
+        elevation: 0,
       ),
-      body: ListView(
-        children: [
-          const Divider(),
-          SwitchListTile.adaptive(
-            value: _isPrivate,
-            onChanged: (value) {
-              setState(() {
-                _isPrivate = value;
-              });
-            },
-            secondary: const FaIcon(FontAwesomeIcons.lock),
-            title: const Text('Private Account'),
-          ),
-          // 옵션 항목들을 ListTile로 표시
-          ...privacyOptions.map((option) {
-            return ListTile(
-              leading: FaIcon(option['icon'] as IconData),
-              title: Text(option['title'] as String),
-              trailing: option.containsKey('trailing')
-                  ? option['trailing'] as Widget
-                  : const FaIcon(
-                      FontAwesomeIcons.chevronRight,
-                      size: Sizes.size20,
-                      color: Colors.grey,
-                    ),
-            );
-          }),
-          const Divider(),
-          const ListTile(
-            title: Text('Other privacy settings'),
-            subtitle: Text(
-              "Some settings, like restrict, apply to both Threads and Instagram and can be managed on Instagram.",
+      body: ListTileTheme(
+        textColor: textColor,
+        iconColor: textColor,
+        child: ListView(
+          children: [
+            Divider(color: dividerColor),
+            SwitchListTile.adaptive(
+              value: _isPrivate,
+              onChanged: (value) {
+                setState(() {
+                  _isPrivate = value;
+                });
+              },
+              secondary: FaIcon(FontAwesomeIcons.lock, color: textColor),
+              title:
+                  Text('Private Account', style: TextStyle(color: textColor)),
             ),
-            trailing: FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
-          ),
-          const ListTile(
-            leading: FaIcon(FontAwesomeIcons.ban),
-            title: Text('Blocked Accounts'),
-            trailing: FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
-          ),
-          const ListTile(
-            leading: FaIcon(FontAwesomeIcons.heartCrack),
-            title: Text('Hide likes'),
-            trailing: FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
-          ),
-        ],
+            // 옵션 항목들을 ListTile로 표시
+            ...privacyOptions.map((option) {
+              return ListTile(
+                leading: FaIcon(option['icon'] as IconData, color: textColor),
+                title: Text(option['title'] as String,
+                    style: TextStyle(color: textColor)),
+                trailing: option.containsKey('trailing')
+                    ? option['trailing'] as Widget
+                    : FaIcon(
+                        FontAwesomeIcons.chevronRight,
+                        size: Sizes.size20,
+                        color: dark ? Colors.grey.shade400 : Colors.grey,
+                      ),
+                onTap: () {},
+              );
+            }),
+            Divider(color: dividerColor),
+            ListTile(
+              title: Text(
+                'Other privacy settings',
+                style: TextStyle(color: textColor),
+              ),
+              subtitle: Text(
+                "Some settings, like restrict, apply to both Threads and Instagram and can be managed on Instagram.",
+                style: TextStyle(color: textColor),
+              ),
+              trailing: FaIcon(FontAwesomeIcons.arrowUpRightFromSquare,
+                  color: textColor),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: FaIcon(FontAwesomeIcons.ban, color: textColor),
+              title:
+                  Text('Blocked Accounts', style: TextStyle(color: textColor)),
+              trailing: FaIcon(FontAwesomeIcons.arrowUpRightFromSquare,
+                  color: textColor),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: FaIcon(FontAwesomeIcons.heartCrack, color: textColor),
+              title: Text('Hide likes', style: TextStyle(color: textColor)),
+              trailing: FaIcon(FontAwesomeIcons.arrowUpRightFromSquare,
+                  color: textColor),
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
 import 'package:tiktok_clone/clone_assignment/features/videos/video_recording_screen.dart';
+import 'package:tiktok_clone/clone_assignment/utils.dart'; // isDarkMode 함수가 정의되어 있다고 가정
 
 class WriteScreen extends StatefulWidget {
   const WriteScreen({super.key});
@@ -66,35 +67,43 @@ class _WriteScreenState extends State<WriteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 현재 다크모드 여부 판별 (isDarkMode 함수는 BuildContext 필요)
+    final bool dark = isDarkMode(context);
+    final Color backgroundColor = dark ? Colors.black : Colors.white;
+    final Color textColor = dark ? Colors.white : Colors.black;
+    final Color hintColor = dark ? Colors.grey.shade400 : Colors.grey;
+    // BottomAppBar의 배경은 AppBar와 동일하게 설정
+    final Color bottomBarColor = backgroundColor;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(28),
       child: Scaffold(
+        backgroundColor: backgroundColor,
         // AppBar: 좌측에 "Cancel" 텍스트 버튼을 배치
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          backgroundColor: Colors.white,
+          backgroundColor: backgroundColor,
           leadingWidth: 80,
           elevation: 1,
-          // leading에 충분한 패딩을 주어 Cancel 텍스트가 보이도록 함
           leading: Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Center(
               child: GestureDetector(
                 onTap: _onCancel,
-                child: const Text(
+                child: Text(
                   'Cancel',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                    color: textColor,
                   ),
                 ),
               ),
             ),
           ),
-          title: const Text(
+          title: Text(
             "New thread",
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: textColor),
           ),
           centerTitle: true,
         ),
@@ -114,15 +123,16 @@ class _WriteScreenState extends State<WriteScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // 사용자 아이디 BakQ 표시
-                    const Text(
+                    Text(
                       "BakQ",
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
+                        color: textColor,
                       ),
                     ),
-                    // 텍스트 입력창 (힌트 텍스트: Start a thread...)
-                    if (_selectedImage != null) // 이미지가 있으면 표시
+                    // 텍스트 입력창 위에 선택한 이미지가 있으면 표시
+                    if (_selectedImage != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: Stack(
@@ -159,21 +169,22 @@ class _WriteScreenState extends State<WriteScreen> {
                       controller: _controller,
                       textCapitalization: TextCapitalization.none,
                       autocorrect: false,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: "Start a thread...",
                         hintStyle: TextStyle(
-                          color: Colors.grey,
+                          color: hintColor,
                         ),
                         border: InputBorder.none,
                       ),
                       maxLines: null,
+                      style: TextStyle(color: textColor),
                     ),
                     Gaps.v10,
                     GestureDetector(
                       onTap: _onPostVideoButtonTap,
-                      child: const FaIcon(
+                      child: FaIcon(
                         FontAwesomeIcons.paperclip,
-                        color: Colors.grey,
+                        color: hintColor,
                       ),
                     ),
                   ],
@@ -188,17 +199,17 @@ class _WriteScreenState extends State<WriteScreen> {
               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           duration: const Duration(milliseconds: 200),
           child: BottomAppBar(
-            color: Colors.white,
+            color: bottomBarColor,
             child: SizedBox(
               height: 10,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Anyone car reply",
+                  Text(
+                    "Anyone can reply",
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.grey,
+                      color: hintColor,
                     ),
                   ),
                   TextButton(

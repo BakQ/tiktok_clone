@@ -91,9 +91,9 @@ class PostContainer extends StatelessWidget {
 
   const PostContainer({super.key, required this.post});
 
-  _onTapEllipsis(BuildContext context) {
+  void _onTapEllipsis(BuildContext context) {
     showModalBottomSheet(
-      showDragHandle: true, //Flutter 3.9 이상이면 자동 핸들 추가 가능
+      showDragHandle: true, // Flutter 3.9 이상에서는 자동 핸들이 추가됩니다.
       context: context,
       builder: (context) => const OptionsBottomSheet(),
       constraints: BoxConstraints(
@@ -104,6 +104,12 @@ class PostContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    // 다크/라이트 모드에 따라 플러스 아이콘 컨테이너의 색상을 결정합니다.
+    final plusBackgroundColor = isDark ? Colors.white : Colors.black;
+    final plusIconColor = isDark ? Colors.black : Colors.white;
+    final plusBorderColor = isDark ? Colors.black : Colors.white;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: Row(
@@ -120,14 +126,12 @@ class PostContainer extends StatelessWidget {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: NetworkImage(
-                          post.profilePic,
-                        ),
+                        image: NetworkImage(post.profilePic),
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  // Inner circle (with a plus icon)
+                  // 프로필 이미지 하단에 겹치는 플러스 아이콘
                   Positioned(
                     top: 22,
                     left: 22,
@@ -136,17 +140,17 @@ class PostContainer extends StatelessWidget {
                       height: 22,
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Colors.white,
+                          color: plusBorderColor,
                           width: 2.5,
                         ),
-                        color: Colors.black,
+                        color: plusBackgroundColor,
                         shape: BoxShape.circle,
                       ),
-                      child: const Align(
+                      child: Align(
                         alignment: Alignment.center,
                         child: FaIcon(
                           FontAwesomeIcons.plus,
-                          color: Colors.white,
+                          color: plusIconColor,
                           size: 12,
                         ),
                       ),
@@ -155,11 +159,11 @@ class PostContainer extends StatelessWidget {
                 ],
               ),
               Gaps.v8,
-              // 세로선이 이미지 크기에 맞게 조절되도록 ClipRRect 내부에서 Positioned 사용
+              // 테마의 dividerColor를 사용하여 세로 구분선 색상 설정
               Container(
                 width: 2,
-                height: 200, // 기본값, 아래에서 자동 조절됨
-                color: Colors.grey.shade300,
+                height: 200,
+                color: Theme.of(context).dividerColor,
               ),
               CircleAvatar(
                 backgroundImage: NetworkImage(post.profilePic),
@@ -180,9 +184,12 @@ class PostContainer extends StatelessWidget {
                     const SizedBox(width: 4),
                     const Icon(Icons.verified, color: Colors.blue, size: 16),
                     const Spacer(),
+                    // 테마에 맞춰 시간 텍스트 색상을 설정
                     Text(
                       post.timeAgo,
-                      style: const TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                      ),
                     ),
                     Gaps.h20,
                     GestureDetector(
@@ -199,9 +206,7 @@ class PostContainer extends StatelessWidget {
                     children: [
                       Gaps.v10,
                       SizedBox(
-                        height: Sizes.size96 +
-                            Sizes.size96 +
-                            Sizes.size20, // 이미지 높이 지정
+                        height: Sizes.size96 + Sizes.size96 + Sizes.size20,
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: post.imageUrls.length,

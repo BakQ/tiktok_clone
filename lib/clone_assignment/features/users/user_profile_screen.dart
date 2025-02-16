@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/settings_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/widgets/persistent_tab_bar.dart';
+import 'package:tiktok_clone/clone_assignment/utils.dart';
 
 // 에러 방지를 위한 임시 Thread 위젯
 class Thread extends StatelessWidget {
@@ -170,9 +171,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               BorderRadius.circular(15),
                                         ),
                                       ),
-                                      child: const Text(
+                                      child: Text(
                                         'Edit profile',
-                                        style: TextStyle(color: Colors.black),
+                                        style: TextStyle(
+                                            color: isDarkMode(context)
+                                                ? Colors.white
+                                                : Colors.black),
                                       ),
                                     ),
                                   ),
@@ -189,11 +193,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               BorderRadius.circular(15),
                                         ),
                                       ),
-                                      child: const Text(
+                                      child: Text(
                                         'Share profile',
                                         style: TextStyle(
-                                          color: Colors.black,
-                                        ),
+                                            color: isDarkMode(context)
+                                                ? Colors.white
+                                                : Colors.black),
                                       ),
                                     ),
                                   )

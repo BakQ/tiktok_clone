@@ -24,41 +24,31 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     const Center(
       child: Text(
         "home",
-        style: TextStyle(
-          fontSize: 49,
-        ),
+        style: TextStyle(fontSize: 49),
       ),
     ),
     const Center(
       child: Text(
         "Search",
-        style: TextStyle(
-          fontSize: 49,
-        ),
+        style: TextStyle(fontSize: 49),
       ),
     ),
     const Center(
       child: Text(
         "Square",
-        style: TextStyle(
-          fontSize: 49,
-        ),
+        style: TextStyle(fontSize: 49),
       ),
     ),
     const Center(
       child: Text(
         "Heart",
-        style: TextStyle(
-          fontSize: 49,
-        ),
+        style: TextStyle(fontSize: 49),
       ),
     ),
     const Center(
       child: Text(
         "Profile",
-        style: TextStyle(
-          fontSize: 49,
-        ),
+        style: TextStyle(fontSize: 49),
       ),
     )
   ];
@@ -70,7 +60,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   void _onScroll() {
-    print(_scrollController.offset);
+    // 예시: 스크롤에 따라 타이틀 보이기 여부 조정
     if (_scrollController.offset < 110) {
       setState(() {
         _showTitle = true;
@@ -82,13 +72,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       });
     }
   }
-  // ✅ 네비게이션에서 WriteScreen을 바텀시트로 띄우는 함수
 
+  // 네비게이션에서 WriteScreen을 바텀시트로 띄우는 함수
   void showWriteScreen(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      showDragHandle: false, //Flutter 3.9 이상이면 자동 핸들 추가 가능
+      showDragHandle: false, // Flutter 3.9 이상이면 자동 핸들 추가 가능
       builder: (context) => const WriteScreen(),
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.9,
@@ -99,7 +89,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener((_onScroll));
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -110,13 +100,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 다크/라이트 모드에 따라 BottomAppBar의 색상을 테마에서 가져옵니다.
+    final bottomAppBarColor =
+        Theme.of(context).bottomAppBarTheme.color ?? Colors.white;
+
     return Scaffold(
-      //화면들 state가 사라지는 방법 계속새로고침임
-      //body: screens.elementAt(_selectedIndex),
-      //Stack 위젯으로는 다생기고 화면을 보여주고 안보여주고함 stack이 메모리말하는듯
-      //offstage true면 화면을 가리고있따.
       body: Scrollbar(
-        //스크롤바를 만틈 컨트롤러 넣어줘야함
         controller: _scrollController,
         child: Stack(
           children: [
@@ -126,23 +115,25 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             ),
             Offstage(
               offstage: _selectedIndex != 1,
-              child: screens[_selectedIndex],
+              child: screens[1],
             ),
             Offstage(
               offstage: _selectedIndex != 2,
-              child: screens[_selectedIndex],
+              child: screens[2],
             ),
             Offstage(
               offstage: _selectedIndex != 3,
-              child: screens[_selectedIndex],
+              child: screens[3],
             ),
             Offstage(
-                offstage: _selectedIndex != 4, child: const ProfileScreen()),
+              offstage: _selectedIndex != 4,
+              child: const ProfileScreen(),
+            ),
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
+        color: bottomAppBarColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Row(
