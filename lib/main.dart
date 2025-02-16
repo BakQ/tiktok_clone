@@ -31,6 +31,7 @@ class TikTokApp extends StatelessWidget {
 
       // ✅ 라이트 모드 테마 설정
       theme: ThemeData(
+        useMaterial3: true,
         textTheme: Typography.blackMountainView,
         brightness: Brightness.light, // 밝은 테마
 
@@ -48,6 +49,7 @@ class TikTokApp extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black, // 아이콘 & 글씨 색상 (검정)
           backgroundColor: Colors.white, // 배경색 (흰색)
+          surfaceTintColor: Colors.white,
           elevation: 0, // 그림자 효과 없음
           titleTextStyle: TextStyle(
             color: Colors.black, // 제목 색상 (검정)
@@ -67,8 +69,11 @@ class TikTokApp extends StatelessWidget {
 
       // ✅ 다크 모드 테마 설정
       darkTheme: ThemeData(
-        tabBarTheme: const TabBarTheme(
+        useMaterial3: true,
+        tabBarTheme: TabBarTheme(
           indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey.shade700,
         ),
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFFE9435A),
@@ -77,7 +82,20 @@ class TikTokApp extends StatelessWidget {
         brightness: Brightness.dark, // 어두운 테마
         scaffoldBackgroundColor: Colors.black, // 배경색 검정
         appBarTheme: AppBarTheme(
+          surfaceTintColor: Colors.grey.shade900,
           backgroundColor: Colors.grey.shade900,
+          foregroundColor: Colors.white,
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: Sizes.size16 + Sizes.size2,
+            fontWeight: FontWeight.w600,
+          ),
+          actionsIconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
         ),
         bottomAppBarTheme: BottomAppBarTheme(
           color: Colors.grey.shade900, // 하단 바 색상 (짙은 회색)
@@ -85,7 +103,7 @@ class TikTokApp extends StatelessWidget {
         primaryColor: const Color(0xFFE9435A), // 기본 색상 (빨간색)
       ),
 
-      home: const MainNavigationScreen(), // ✅ 앱 첫 화면을 회원가입 화면으로 설정
+      home: const SignUpScreen(), // ✅ 앱 첫 화면을 회원가입 화면으로 설정
     );
   }
 }
