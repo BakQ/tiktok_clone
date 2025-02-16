@@ -30,7 +30,7 @@ class TikTokApp extends StatelessWidget {
 
       // ✅ 라이트 모드 테마 설정
       theme: ThemeData(
-        textTheme: GoogleFonts.itimTextTheme(),
+        textTheme: Typography.blackMountainView,
         brightness: Brightness.light, // 밝은 테마
 
         scaffoldBackgroundColor: Colors.white, // 배경색 흰색
@@ -58,11 +58,12 @@ class TikTokApp extends StatelessWidget {
 
       // ✅ 다크 모드 테마 설정
       darkTheme: ThemeData(
-        textTheme: GoogleFonts.itimTextTheme(
-          ThemeData(brightness: Brightness.dark).textTheme,
-        ),
+        textTheme: Typography.whiteMountainView,
         brightness: Brightness.dark, // 어두운 테마
         scaffoldBackgroundColor: Colors.black, // 배경색 검정
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.grey.shade900,
+        ),
         bottomAppBarTheme: BottomAppBarTheme(
           color: Colors.grey.shade900, // 하단 바 색상 (짙은 회색)
         ),
