@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/main_navigation/main_navigation_screen.dart';
 
 void main() async {
   // ✅ Flutter 엔진이 초기화되도록 보장 (비동기 코드 사용 가능)
@@ -54,10 +55,19 @@ class TikTokApp extends StatelessWidget {
             fontWeight: FontWeight.w600, // 글씨 두께 (Semi-Bold)
           ),
         ),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey.shade500,
+          indicatorColor: Colors.black,
+        ),
       ),
 
       // ✅ 다크 모드 테마 설정
       darkTheme: ThemeData(
+        tabBarTheme: const TabBarTheme(indicatorColor: Colors.white),
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFFE9435A),
+        ),
         textTheme: Typography.whiteMountainView,
         brightness: Brightness.dark, // 어두운 테마
         scaffoldBackgroundColor: Colors.black, // 배경색 검정
@@ -70,7 +80,7 @@ class TikTokApp extends StatelessWidget {
         primaryColor: const Color(0xFFE9435A), // 기본 색상 (빨간색)
       ),
 
-      home: const SignUpScreen(), // ✅ 앱 첫 화면을 회원가입 화면으로 설정
+      home: const MainNavigationScreen(), // ✅ 앱 첫 화면을 회원가입 화면으로 설정
     );
   }
 }
