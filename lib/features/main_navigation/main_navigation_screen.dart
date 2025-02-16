@@ -91,7 +91,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       //body: screens.elementAt(_selectedIndex),
       //Stack 위젯으로는 다생기고 화면을 보여주고 안보여주고함 stack이 메모리말하는듯
       //offstage true면 화면을 가리고있따.
-      backgroundColor: _selectedIndex == 0 ? Colors.black : Colors.white,
+      backgroundColor:
+          _selectedIndex == 0 || isDark ? Colors.black : Colors.white,
       body: Stack(
         children: [
           Offstage(
