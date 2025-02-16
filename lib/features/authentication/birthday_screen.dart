@@ -110,15 +110,11 @@ class _EmailScreenState extends State<BirthdayScreen> {
         ),
       ),
       //아래 고정시키는 위젯 저번과제에 이거없어서 진짜 힘들었는데 ...
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: SizedBox(
         height: 300,
-        //cupertino는 애플 디자인 따라 만든 위젯들
         child: CupertinoDatePicker(
-          //마지막 날짜 지정
           maximumDate: initialDate,
-          //시작날짜
           initialDateTime: initialDate,
-          // 포맷 지정
           mode: CupertinoDatePickerMode.date,
           onDateTimeChanged: _setTextFieldDate,
         ),
