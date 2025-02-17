@@ -10,7 +10,8 @@ import 'package:tiktok_clone/features/authentication/widgets/auth_boutton.dart';
 import 'package:tiktok_clone/utils.dart';
 
 class SignUpScreen extends StatelessWidget {
-  static const routeName = "/";
+  static const routeURL = "/";
+  static const routeName = "signUp";
   const SignUpScreen({super.key});
 
   //로그인 화면으로 보낸다 .
@@ -25,7 +26,7 @@ class SignUpScreen extends StatelessWidget {
         builder: (context) => const UsernameScreen(),
       ),
     ) // */
-    context.push(UsernameScreen.routeName);
+    context.pushNamed(UsernameScreen.routeName);
   }
 
   @override
