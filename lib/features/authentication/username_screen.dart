@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/email_screen.dart';
@@ -37,24 +38,21 @@ class _EmailScreenState extends State<UsernameScreen> {
   }
 
   //StatefulWidget 위젯에서는 context를 안받아도 된다 context는 항상 static처럼존재한다.
-  void onNextTap() {
+  void _onNextTap() {
     if (_username.isEmpty) return;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const EmailScreen(),
-      ),
-    ); // MaterialPageRoute
+    context.push(
+      EmailScreen.routeName,
+      extra: EmailScreenArgs(username: _username),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "Sign up",
         ),
-        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),
@@ -100,7 +98,7 @@ class _EmailScreenState extends State<UsernameScreen> {
             Gaps.v28,
             //부모 전체크기만큼 사이즈박스 만든다.
             GestureDetector(
-                onTap: onNextTap,
+                onTap: _onNextTap,
                 child: FormButton(disabled: _username.isEmpty))
           ],
         ),

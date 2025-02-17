@@ -21,15 +21,19 @@ final router = GoRouter(
       builder: (context, state) => const UsernameScreen(),
     ),
     GoRoute(
-      path: EmailScreen.routeName,
-      builder: (context, state) => const EmailScreen(),
+      path: EmailScreen.routeName, // 경로: "/email"
+      builder: (context, state) {
+        final args = state.extra as EmailScreenArgs; // extra에 전달된 데이터를 가져옴
+        return EmailScreen(username: args.username); // 전달받은 username 사용
+      },
     ),
     GoRoute(
       path: "/users/:username",
       builder: (context, state) {
-        final username = state.pathParameters['username'];
-        return UserProfileScreen(username: username!);
+        final username = state.pathParameters['username']; // URL에서 username 추출
+        final tab = state.uri.queryParameters["show"]; // "?show=likes" 데이터 추출
+        return UserProfileScreen(username: username!, tab: tab!);
       },
-    )
+    ),
   ],
 );
