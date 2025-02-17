@@ -15,16 +15,17 @@ class SignUpScreen extends StatelessWidget {
 
   //로그인 화면으로 보낸다 .
   void _onLoginTap(BuildContext context) {
-    context.go(LoginScreen.routeName);
+    context.push(LoginScreen.routeName);
   }
 
   //메서드 앞에 언더바를 하면 private 접근자가 된다 플러터는 따로 접근자 변수가 없다 .
   void _onEmailTap(BuildContext context) {
-    Navigator.of(context).push(
+    /*Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const UsernameScreen(),
       ),
-    ); // MaterialPageRoute
+    ) // */
+    context.push(UsernameScreen.routeName);
   }
 
   @override
