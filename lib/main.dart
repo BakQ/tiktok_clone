@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/main_navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/router.dart';
 
 void main() async {
   // ✅ Flutter 엔진이 초기화되도록 보장 (비동기 코드 사용 가능)
@@ -24,7 +25,8 @@ class TikTokApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       debugShowCheckedModeBanner: false, // ✅ 디버그 배너 제거
       title: 'TikTok Clone', // ✅ 앱 이름 설정
       themeMode: ThemeMode.system, // ✅ 시스템 다크/라이트 모드 따라감
@@ -103,7 +105,7 @@ class TikTokApp extends StatelessWidget {
         primaryColor: const Color(0xFFE9435A), // 기본 색상 (빨간색)
       ),
 
-      home: const SignUpScreen(), // ✅ 앱 첫 화면을 회원가입 화면으로 설정
+      //home: const SignUpScreen(), // ✅ 앱 첫 화면을 회원가입 화면으로 설정
     );
   }
 }

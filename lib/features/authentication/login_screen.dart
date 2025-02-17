@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
@@ -7,12 +8,13 @@ import 'package:tiktok_clone/features/authentication/widgets/auth_boutton.dart';
 import 'package:tiktok_clone/utils.dart';
 
 class LoginScreen extends StatelessWidget {
+  static String routeName = "/login";
   const LoginScreen({super.key});
 
   //로그인 화면으로 보낸다 .
   void _onSignUpTap(BuildContext context) {
     //pusho 는 기존화면위에 올리는거고 pop는 제일 위에꺼 빼 먹는거다 .
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   //메서드 앞에 언더바를 하면 private 접근자가 된다 플러터는 따로 접근자 변수가 없다 .
