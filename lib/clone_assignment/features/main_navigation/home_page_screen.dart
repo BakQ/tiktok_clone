@@ -5,6 +5,9 @@ import 'package:tiktok_clone/clone_assignment/constants/sizes.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/widgets/more_bottom_sheet.dart';
 
 class HomePageScreen extends StatelessWidget {
+  static const String routeURL = '/';
+  static const String routeName = 'home';
+
   final ScrollController scrollController;
   const HomePageScreen({super.key, required this.scrollController});
 

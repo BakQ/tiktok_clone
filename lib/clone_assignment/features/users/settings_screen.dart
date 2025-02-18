@@ -5,6 +5,9 @@ import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart
 import 'package:tiktok_clone/clone_assignment/utils.dart';
 
 class SettingsScreen extends StatefulWidget {
+  static const String routeURL = '/setting';
+  static const String routeName = 'setting';
+
   const SettingsScreen({super.key});
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();

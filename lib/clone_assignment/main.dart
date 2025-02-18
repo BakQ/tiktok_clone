@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tiktok_clone/clone_assignment/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/main_navigation/main_navigation_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/onboarding/interests_screen.dart';
+import 'package:tiktok_clone/clone_assignment/router.dart' show router;
 
 import '../constants/sizes.dart';
 
@@ -15,7 +13,8 @@ class XClone extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       debugShowCheckedModeBanner: false, // ✅ 디버그 배너 제거
       title: 'Clone',
       themeMode: ThemeMode.system, // ✅ 시스템 다크/라이트 모드 따라감
@@ -93,7 +92,7 @@ class XClone extends StatelessWidget {
         primaryColor: const Color(0xFFE9435A), // 기본 색상 (빨간색)
       ),
       //home: const SignUpScreen(),
-      home: const MainNavigationScreen(),
+      // home: const MainNavigationScreen(),
     );
   }
 }

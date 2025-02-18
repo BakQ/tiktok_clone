@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/settings_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/widgets/persistent_tab_bar.dart';
@@ -20,6 +21,9 @@ class Thread extends StatelessWidget {
 }
 
 class ProfileScreen extends StatefulWidget {
+  static const String routeURL = '/profile';
+  static const String routeName = 'profile';
+
   const ProfileScreen({super.key});
 
   @override
@@ -27,6 +31,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  void _onSettingTap() {
+    context.push(SettingsScreen.routeName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,14 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: const Icon(Icons.camera_alt),
           ),
           IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SettingsScreen(),
-                ),
-              );
-            },
+            onPressed: _onSettingTap,
             icon: const Icon(Icons.menu),
           ),
         ],

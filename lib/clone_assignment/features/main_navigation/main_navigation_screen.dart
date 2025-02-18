@@ -8,6 +8,8 @@ import 'package:tiktok_clone/clone_assignment/features/users/user_profile_screen
 import 'widgets/nav_tab.dart';
 
 class MainNavigationScreen extends StatefulWidget {
+  static const routeURL = "/";
+  static const routeName = "home";
   const MainNavigationScreen({super.key});
 
   @override
@@ -17,7 +19,7 @@ class MainNavigationScreen extends StatefulWidget {
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final ScrollController _scrollController = ScrollController();
 
-  int _selectedIndex = 4;
+  int _selectedIndex = 0;
   bool _showTitle = false;
 
   final screens = [
