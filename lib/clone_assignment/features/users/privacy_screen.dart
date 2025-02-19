@@ -4,6 +4,8 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils.dart'; // isDarkMode 함수가 정의되어 있다고 가정
 
 class PrivacyScreen extends StatefulWidget {
+  static const String routeURL = '/private';
+  static const String routeName = 'private';
   const PrivacyScreen({super.key});
 
   @override

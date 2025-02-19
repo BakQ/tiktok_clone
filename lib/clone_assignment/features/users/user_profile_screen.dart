@@ -32,7 +32,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   void _onSettingTap() {
-    context.push(SettingsScreen.routeName);
+    context.goNamed(SettingsScreen.routeName);
   }
 
   @override

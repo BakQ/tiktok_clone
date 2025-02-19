@@ -5,6 +5,8 @@ import 'package:tiktok_clone/clone_assignment/features/authentication/sign_up_sc
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/home_page_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/widgets/nav_tab.dart';
+import 'package:tiktok_clone/clone_assignment/features/main_navigation/write_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/settings_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/user_profile_screen.dart';
 
@@ -28,18 +30,31 @@ final GoRouter router = GoRouter(
               context.go(HomePageScreen.routeURL);
               break;
             case 1:
-              context.go(Screen1.routeURL);
+              context.go(SearchScreen.routeURL);
               break;
             case 2:
-              context.go(Screen2.routeURL);
+              //context.go(ActivityScreen.routeURL);
               break;
             case 3:
-              context.go(Screen3.routeURL);
+              context.go(ActivityScreen.routeURL);
               break;
             case 4:
               context.go(ProfileScreen.routeURL);
               break;
           }
+        }
+
+        // 네비게이션에서 WriteScreen을 바텀시트로 띄우는 함수
+        void showWriteScreen(BuildContext context) {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            showDragHandle: false, // Flutter 3.9 이상이면 자동 핸들 추가 가능
+            builder: (context) => const WriteScreen(),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.9,
+            ),
+          );
         }
 
         return Scaffold(
@@ -67,8 +82,8 @@ final GoRouter router = GoRouter(
                   NavTap(
                     isSelected: _selectedIndex == 2,
                     icon: FontAwesomeIcons.shareFromSquare,
-                    //onTap: () => showWriteScreen(context),
-                    onTap: () => onTap(2),
+                    onTap: () => showWriteScreen(context),
+                    //onTap: () => onTap(2),
                   ),
                   NavTap(
                     isSelected: _selectedIndex == 3,
@@ -95,14 +110,9 @@ final GoRouter router = GoRouter(
           ),
         ),
         GoRoute(
-          name: Screen1.routeName,
-          path: Screen1.routeURL,
-          builder: (context, state) => const Screen1(),
-        ),
-        GoRoute(
-          name: Screen2.routeName,
-          path: Screen2.routeURL,
-          builder: (context, state) => const Screen2(),
+          name: SearchScreen.routeName,
+          path: SearchScreen.routeURL,
+          builder: (context, state) => const SearchScreen(),
         ),
         GoRoute(
           name: Screen3.routeName,
@@ -110,41 +120,52 @@ final GoRouter router = GoRouter(
           builder: (context, state) => const Screen3(),
         ),
         GoRoute(
+          name: ActivityScreen.routeName,
+          path: ActivityScreen.routeURL,
+          builder: (context, state) => const ActivityScreen(),
+        ),
+        GoRoute(
           name: ProfileScreen.routeName,
           path: ProfileScreen.routeURL,
           builder: (context, state) => const ProfileScreen(),
         ),
         GoRoute(
-          name: SettingsScreen.routeName,
-          path: SettingsScreen.routeURL,
-          builder: (context, state) => const SettingsScreen(),
-        ),
+            name: SettingsScreen.routeName,
+            path: SettingsScreen.routeURL,
+            builder: (context, state) => const SettingsScreen(),
+            routes: [
+              GoRoute(
+                name: PrivacyScreen.routeName,
+                path: PrivacyScreen.routeURL,
+                builder: (context, state) => const PrivacyScreen(),
+              )
+            ]),
       ],
     ),
   ],
 );
 
-class Screen1 extends StatelessWidget {
-  static const String routeName = 'screen1';
-  static const String routeURL = '/screen1';
+class SearchScreen extends StatelessWidget {
+  static const String routeName = 'search';
+  static const String routeURL = '/search';
 
-  const Screen1({super.key});
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Screen 1'));
+    return const Center(child: Text('Search Screen'));
   }
 }
 
-class Screen2 extends StatelessWidget {
-  static const String routeName = 'screen2';
-  static const String routeURL = '/screen2';
+class ActivityScreen extends StatelessWidget {
+  static const String routeName = 'activity';
+  static const String routeURL = '/activity';
 
-  const Screen2({super.key});
+  const ActivityScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('Screen 2'));
+    return const Center(child: Text('Activity Screen '));
   }
 }
 

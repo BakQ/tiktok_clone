@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart';
 import 'package:tiktok_clone/clone_assignment/utils.dart';
+import 'package:tiktok_clone/router.dart';
 
 class SettingsScreen extends StatefulWidget {
-  static const String routeURL = '/setting';
-  static const String routeName = 'setting';
+  static const String routeURL = '/settings';
+  static const String routeName = 'settings';
 
   const SettingsScreen({super.key});
   @override
@@ -65,12 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       {
         'icon': FontAwesomeIcons.lock,
         'title': 'Privacy',
-        'onTap': () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const PrivacyScreen(),
-              ),
-            ),
+        'onTap': () => context.goNamed(PrivacyScreen.routeName)
       },
       {
         'icon': FontAwesomeIcons.universalAccess,
