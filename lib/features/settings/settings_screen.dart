@@ -4,6 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 
 class SettingsScreen extends StatefulWidget {
+  static String routeName = "settings";
+  static String routeURL = "/settings";
   const SettingsScreen({super.key});
 
   @override
@@ -33,13 +35,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // ✅ 설정 화면의 내용 (리스트 형태)
       body: ListView(
         children: [
-          SwitchListTile.adaptive(
-            value: VideoConfigData.of(context).autoMute, // 현재 설정 값 가져오기
-            onChanged: (value) {
-              VideoConfigData.of(context).toggleMuted(); // 설정 변경
-            },
-            title: const Text("Auto Mute"), // 제목
-            subtitle: const Text("Videos will be muted by default."), // 부가 설명
+          AnimatedBuilder(
+            animation: videoConfig, // 📢 `videoConfig`의 상태 변화를 감지하여 UI를 다시 빌드
+            builder: (context, child) => SwitchListTile.adaptive(
+              value: videoConfig.autoMute, // 현재 `autoMute` 값 가져오기
+              onChanged: (value) {
+                videoConfig.toggleAutoMute(); // 🔄 상태 변경
+              },
+              title: const Text("Mute video"),
+              subtitle: const Text("Videos will be muted by default."),
+            ),
           ),
 
           // ✅ SwitchListTile (알림 설정 ON/OFF)

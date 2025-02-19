@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/inbox/inbox_screen.dart';
+import 'package:tiktok_clone/features/settings/settings_screen.dart';
 
 import 'features/authentication/email_screen.dart';
 import 'features/authentication/login_screen.dart';
@@ -7,6 +9,7 @@ import 'features/authentication/username_screen.dart';
 import 'features/users/user_profile_screen.dart';
 
 final router = GoRouter(
+  initialLocation: "/settings",
   routes: [
     // ✅ 회원가입 루트 ("/signup")
     GoRoute(
@@ -75,6 +78,16 @@ final router = GoRouter(
       },
     ),
     */
+    GoRoute(
+      path: InboxScreen.routeURL, // 경로: "/signup/username"
+      name: InboxScreen.routeName, // 라우트 이름
+      builder: (context, state) => const InboxScreen(), // 사용자 이름 입력 화면
+    ),
+    GoRoute(
+      path: SettingsScreen.routeURL, // 경로: "/signup/username"
+      name: SettingsScreen.routeName, // 라우트 이름
+      builder: (context, state) => const SettingsScreen(), // 사용자 이름 입력 화면
+    ),
     GoRoute(
       path: "/users/:username",
       builder: (context, state) {

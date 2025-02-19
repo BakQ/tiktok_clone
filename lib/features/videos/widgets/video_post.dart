@@ -42,6 +42,8 @@ class _VideoPostState extends State<VideoPost>
   final Duration _animationDuration = const Duration(milliseconds: 200);
   bool _isPaused = false;
 
+  bool _autoMute = videoConfig.autoMute;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,11 @@ class _VideoPostState extends State<VideoPost>
       duration: _animationDuration,
     );
 
+    videoConfig.addListener(() {
+      setState(() {
+        _autoMute = videoConfig.autoMute;
+      });
+    });
     /**_animationController.reverse()
      * 수행 시, 1.5 => 1.0 으로 값이 바뀌게 되는데,
      * build() 는 1.5, 1.0 일 때만 재수행 되고 있음
@@ -195,12 +202,12 @@ class _VideoPostState extends State<VideoPost>
             top: 40,
             child: IconButton(
               icon: FaIcon(
-                VideoConfigData.of(context).autoMute
+                _autoMute
                     ? FontAwesomeIcons.volumeOff
                     : FontAwesomeIcons.volumeHigh,
                 color: Colors.white,
               ),
-              onPressed: VideoConfigData.of(context).toggleMuted,
+              onPressed: videoConfig.toggleAutoMute,
             ),
           ),
           const Positioned(
