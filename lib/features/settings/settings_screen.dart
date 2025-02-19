@@ -35,12 +35,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // ✅ 설정 화면의 내용 (리스트 형태)
       body: ListView(
         children: [
-          AnimatedBuilder(
-            animation: videoConfig, // 📢 `videoConfig`의 상태 변화를 감지하여 UI를 다시 빌드
-            builder: (context, child) => SwitchListTile.adaptive(
-              value: videoConfig.autoMute, // 현재 `autoMute` 값 가져오기
+          ValueListenableBuilder(
+            valueListenable: videoConfig,
+            builder: (context, value, child) => SwitchListTile.adaptive(
+              value: value,
               onChanged: (value) {
-                videoConfig.toggleAutoMute(); // 🔄 상태 변경
+                videoConfig.value = !videoConfig.value;
               },
               title: const Text("Mute video"),
               subtitle: const Text("Videos will be muted by default."),

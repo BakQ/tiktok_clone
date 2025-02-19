@@ -42,7 +42,7 @@ class _VideoPostState extends State<VideoPost>
   final Duration _animationDuration = const Duration(milliseconds: 200);
   bool _isPaused = false;
 
-  bool _autoMute = videoConfig.autoMute;
+  bool _autoMute = videoConfig.value;
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class _VideoPostState extends State<VideoPost>
 
     videoConfig.addListener(() {
       setState(() {
-        _autoMute = videoConfig.autoMute;
+        _autoMute = videoConfig.value;
       });
     });
     /**_animationController.reverse()
@@ -207,7 +207,9 @@ class _VideoPostState extends State<VideoPost>
                     : FontAwesomeIcons.volumeHigh,
                 color: Colors.white,
               ),
-              onPressed: videoConfig.toggleAutoMute,
+              onPressed: () {
+                videoConfig.value = !videoConfig.value;
+              },
             ),
           ),
           const Positioned(
