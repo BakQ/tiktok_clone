@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tiktok_clone/clone_assignment/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/home_page_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/main_navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/write_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart';
