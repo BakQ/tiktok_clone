@@ -1,10 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/lepos/setting_config_repo.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/view_models/setting_config_vm.dart';
 import 'package:tiktok_clone/clone_assignment/router.dart' show router;
 
 import '../constants/sizes.dart';
 
-void main() {
-  runApp(const XClone());
+void main() async {
+  // ✅ Flutter 엔진이 초기화되도록 보장 (비동기 코드 사용 가능)
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // 📌 `SharedPreferences` 인스턴스를 생성하여 로컬 저장소 사용 준비
+  final preferences = await SharedPreferences.getInstance();
+
+// 📌 `PlaybackConfigRepository`에 `SharedPreferences`를 주입하여 데이터 저장 및 불러오기 가능하도록 설정
+  final repository = SettingConfigRepository(preferences);
+
+// ✅ `MultiProvider`를 사용하여 여러 개의 `Provider`를 앱 전체에 주입
+  runApp(
+    MultiProvider(
+      providers: [
+        // 🔥 `ChangeNotifierProvider`를 사용하여 `SettingConfigViewModel`을 앱 전역에서 사용 가능하게 만듦
+        ChangeNotifierProvider(
+          create: (context) => SettingConfigViewModel(repository),
+        ),
+      ],
+      child: const XClone(), // 📌 `TikTokApp` 실행 (앱 시작)
+    ),
+  );
 }
 
 class XClone extends StatelessWidget {
@@ -13,11 +37,13 @@ class XClone extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // darkMode 값에 따라 테마 모드를 결정합니다.
+    final darkMode = context.watch<SettingConfigViewModel>().darkMode;
     return MaterialApp.router(
       routerConfig: router,
       debugShowCheckedModeBanner: false, // ✅ 디버그 배너 제거
       title: 'Clone',
-      themeMode: ThemeMode.system, // ✅ 시스템 다크/라이트 모드 따라감
+      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
       // ✅ 라이트 모드 테마 설정
       theme: ThemeData(
         useMaterial3: true,

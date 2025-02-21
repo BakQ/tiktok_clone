@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/models/setting_config_model.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/view_models/setting_config_vm.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils.dart'; // isDarkMode 함수가 정의되어 있다고 가정
 
@@ -16,8 +19,30 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
   bool _isPrivate = false;
 
   @override
+  void initState() {
+    super.initState();
+
+    context
+        .read<SettingConfigViewModel>()
+        .addListener(_onDarkModeConfigChanged);
+  }
+
+  @override
+  void dispose() {
+    context
+        .read<SettingConfigViewModel>()
+        .removeListener(_onDarkModeConfigChanged);
+    super.dispose();
+  }
+
+  void _onDarkModeConfigChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final bool dark = isDarkMode(context);
+    final bool dark = context.watch<SettingConfigViewModel>().darkMode;
     final Color textColor = dark ? Colors.white : Colors.black;
     final Color bgColor = dark ? Colors.black : Colors.white;
     final Color dividerColor =
@@ -91,6 +116,14 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
               secondary: FaIcon(FontAwesomeIcons.lock, color: textColor),
               title:
                   Text('Private Account', style: TextStyle(color: textColor)),
+            ),
+            SwitchListTile.adaptive(
+              value: context.watch<SettingConfigViewModel>().darkMode,
+              onChanged: (value) {
+                context.read<SettingConfigViewModel>().setDarkMode(value);
+              },
+              secondary: FaIcon(FontAwesomeIcons.moon, color: textColor),
+              title: Text('Dark Mode', style: TextStyle(color: textColor)),
             ),
             // 옵션 항목들을 ListTile로 표시
             ...privacyOptions.map((option) {

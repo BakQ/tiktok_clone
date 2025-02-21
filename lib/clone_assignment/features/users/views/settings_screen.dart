@@ -2,7 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/view_models/setting_config_vm.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/views/privacy_screen.dart';
 import 'package:tiktok_clone/clone_assignment/utils.dart';
 import 'package:tiktok_clone/router.dart';
 
@@ -48,7 +50,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool dark = isDarkMode(context);
+    final bool dark = context.watch<SettingConfigViewModel>().darkMode;
     // 다크 모드 여부에 따른 색상 설정
     final Color textColor = dark ? Colors.white : Colors.black;
     final Color bgColor = dark ? Colors.black : Colors.white;

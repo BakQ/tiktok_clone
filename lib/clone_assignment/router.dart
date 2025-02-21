@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/home_page_screen.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/clone_assignment/features/main_navigation/write_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/users/privacy_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/users/settings_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/users/user_profile_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/views/privacy_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/views/settings_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/views/user_profile_screen.dart';
 
 // 공통 ScrollController 선언
 final ScrollController _scrollController = ScrollController();

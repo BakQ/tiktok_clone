@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/clone_assignment/constants/gaps.dart';
-import 'package:tiktok_clone/clone_assignment/features/users/settings_screen.dart';
-import 'package:tiktok_clone/clone_assignment/features/users/widgets/persistent_tab_bar.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/views/settings_screen.dart';
+import 'package:tiktok_clone/clone_assignment/features/users/views/widgets/persistent_tab_bar.dart';
 import 'package:tiktok_clone/clone_assignment/utils.dart';
 
 // 에러 방지를 위한 임시 Thread 위젯
