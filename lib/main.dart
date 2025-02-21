@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -18,17 +19,22 @@ void main() async {
     ],
   );
 
+// 📌 `SharedPreferences` 인스턴스를 생성하여 로컬 저장소 사용 준비
   final preferences = await SharedPreferences.getInstance();
+
+// 📌 `PlaybackConfigRepository`에 `SharedPreferences`를 주입하여 데이터 저장 및 불러오기 가능하도록 설정
   final repository = PlaybackConfigRepository(preferences);
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider(
-        create: (context) => PlaybackConfigViewModel(repository),
-      )
-    ],
-    child: const TikTokApp(),
-  ));
+  runApp(
+    ProviderScope(
+      overrides: [
+        // 🔥 `playbackConfigProvider`를 `PlaybackConfigViewModel(repository)`로 오버라이드
+        playbackConfigProvider
+            .overrideWith(() => PlaybackConfigViewModel(repository))
+      ],
+      child: const TikTokApp(), // 📌 TikTok 앱 실행
+    ),
+  );
 }
 
 class TikTokApp extends StatelessWidget {

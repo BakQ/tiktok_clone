@@ -66,11 +66,6 @@ class _VideoPostState extends State<VideoPost>
         _autoMute = videoConfig.value;
       });
     });
-
-    context
-        .read<PlaybackConfigViewModel>()
-        .addListener(_onPlaybackConfigChanged);
-
     /**_animationController.reverse()
      * 수행 시, 1.5 => 1.0 으로 값이 바뀌게 되는데,
      * build() 는 1.5, 1.0 일 때만 재수행 되고 있음
@@ -90,8 +85,7 @@ class _VideoPostState extends State<VideoPost>
 
   void _onPlaybackConfigChanged() {
     if (!mounted) return;
-    final muted = context.read<PlaybackConfigViewModel>().muted;
-    if (muted) {
+    if (false) {
       _videoPlayerController.setVolume(0);
     } else {
       _videoPlayerController.setVolume(1);
@@ -127,8 +121,7 @@ class _VideoPostState extends State<VideoPost>
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
-      final autoplay = context.read<PlaybackConfigViewModel>().autoplay;
-      if (autoplay) {
+      if (false) {
         _videoPlayerController.play();
       }
     }
@@ -223,17 +216,13 @@ class _VideoPostState extends State<VideoPost>
             left: 20,
             top: 40,
             child: IconButton(
-              icon: FaIcon(
-                context.watch<PlaybackConfigViewModel>().muted
+              icon: const FaIcon(
+                false
                     ? FontAwesomeIcons.volumeOff
                     : FontAwesomeIcons.volumeHigh,
                 color: Colors.white,
               ),
-              onPressed: () {
-                context
-                    .read<PlaybackConfigViewModel>()
-                    .setMuted(!context.read<PlaybackConfigViewModel>().muted);
-              },
+              onPressed: () {},
             ),
           ),
           const Positioned(
