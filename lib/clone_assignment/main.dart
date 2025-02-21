@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/lepos/setting_config_repo.dart';
@@ -19,31 +20,32 @@ void main() async {
 
 // ✅ `MultiProvider`를 사용하여 여러 개의 `Provider`를 앱 전체에 주입
   runApp(
-    MultiProvider(
-      providers: [
+    ProviderScope(
+      overrides: [
         // 🔥 `ChangeNotifierProvider`를 사용하여 `SettingConfigViewModel`을 앱 전역에서 사용 가능하게 만듦
-        ChangeNotifierProvider(
-          create: (context) => SettingConfigViewModel(repository),
-        ),
+        settingConfigProvider
+            .overrideWith(() => SettingConfigViewModel(repository))
       ],
       child: const XClone(), // 📌 `TikTokApp` 실행 (앱 시작)
     ),
   );
 }
 
-class XClone extends StatelessWidget {
+class XClone extends ConsumerWidget {
   const XClone({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // darkMode 값에 따라 테마 모드를 결정합니다.
-    final darkMode = context.watch<SettingConfigViewModel>().darkMode;
+
     return MaterialApp.router(
       routerConfig: router,
       debugShowCheckedModeBanner: false, // ✅ 디버그 배너 제거
       title: 'Clone',
-      themeMode: darkMode ? ThemeMode.dark : ThemeMode.light,
+      themeMode: ref.watch(settingConfigProvider).darkMode
+          ? ThemeMode.dark
+          : ThemeMode.light,
       // ✅ 라이트 모드 테마 설정
       theme: ThemeData(
         useMaterial3: true,

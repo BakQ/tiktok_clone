@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -8,16 +9,16 @@ import 'package:tiktok_clone/clone_assignment/features/users/views/privacy_scree
 import 'package:tiktok_clone/clone_assignment/utils.dart';
 import 'package:tiktok_clone/router.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   static const String routeURL = '/settings';
   static const String routeName = 'settings';
-
   const SettingsScreen({super.key});
+
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _loggingOut = false;
 
   // 로그아웃 다이얼로그를 비동기 함수로 분리
@@ -50,7 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final bool dark = context.watch<SettingConfigViewModel>().darkMode;
+    final bool dark = ref.read(settingConfigProvider).darkMode;
     // 다크 모드 여부에 따른 색상 설정
     final Color textColor = dark ? Colors.white : Colors.black;
     final Color bgColor = dark ? Colors.black : Colors.white;

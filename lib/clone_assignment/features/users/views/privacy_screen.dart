@@ -1,48 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/models/setting_config_model.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/view_models/setting_config_vm.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils.dart'; // isDarkMode 함수가 정의되어 있다고 가정
 
-class PrivacyScreen extends StatefulWidget {
+class PrivacyScreen extends ConsumerStatefulWidget {
   static const String routeURL = '/private';
   static const String routeName = 'private';
   const PrivacyScreen({super.key});
 
   @override
-  State<PrivacyScreen> createState() => _PrivacyScreenState();
+  ConsumerState<PrivacyScreen> createState() => _PrivacyScreenState();
 }
 
-class _PrivacyScreenState extends State<PrivacyScreen> {
+class _PrivacyScreenState extends ConsumerState<PrivacyScreen> {
   bool _isPrivate = false;
 
   @override
-  void initState() {
-    super.initState();
-
-    context
-        .read<SettingConfigViewModel>()
-        .addListener(_onDarkModeConfigChanged);
-  }
-
-  @override
-  void dispose() {
-    context
-        .read<SettingConfigViewModel>()
-        .removeListener(_onDarkModeConfigChanged);
-    super.dispose();
-  }
-
-  void _onDarkModeConfigChanged() {
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final bool dark = context.watch<SettingConfigViewModel>().darkMode;
+    // ref.watch를 사용하여 provider를 구독합니다.
+    final bool dark = ref.watch(settingConfigProvider).darkMode;
     final Color textColor = dark ? Colors.white : Colors.black;
     final Color bgColor = dark ? Colors.black : Colors.white;
     final Color dividerColor =
@@ -118,9 +97,10 @@ class _PrivacyScreenState extends State<PrivacyScreen> {
                   Text('Private Account', style: TextStyle(color: textColor)),
             ),
             SwitchListTile.adaptive(
-              value: context.watch<SettingConfigViewModel>().darkMode,
+              value: dark,
               onChanged: (value) {
-                context.read<SettingConfigViewModel>().setDarkMode(value);
+                // provider의 notifier를 통해 darkMode를 변경합니다.
+                ref.read(settingConfigProvider.notifier).setDarkMode(value);
               },
               secondary: FaIcon(FontAwesomeIcons.moon, color: textColor),
               title: Text('Dark Mode', style: TextStyle(color: textColor)),
