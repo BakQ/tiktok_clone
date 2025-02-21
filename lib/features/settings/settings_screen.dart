@@ -1,33 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerWidget {
   static String routeName = "settings";
   static String routeURL = "/settings";
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  // ✅ 알림 설정 상태를 저장하는 변수 (기본값: false)
-  bool _notifications = false;
-
-  // ✅ 알림 설정 스위치/체크박스 변경 시 호출되는 함수
-  void _onNotificationsChanged(bool? newValue) {
-    if (newValue == null) return; // null 값 방지
-    setState(() {
-      _notifications = newValue; // 상태 업데이트
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       // ✅ 앱 기본 레이아웃 제공 (AppBar 포함)
       appBar: AppBar(
@@ -38,22 +23,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
       body: ListView(
         children: [
           SwitchListTile.adaptive(
-            value: false,
-            onChanged: (value) => {},
+            value: ref
+                .watch(playbackConfigProvider)
+                .muted, // 🔈 `muted` 상태를 `watch`하여 UI 자동 업데이트
+            onChanged: (value) => ref
+                .read(playbackConfigProvider.notifier)
+                .setMuted(value), // 🔄 `setMuted(value)`를 실행하여 상태 변경
             title: const Text("Mute video"),
             subtitle: const Text("Video will be muted by default."),
           ),
           SwitchListTile.adaptive(
-            value: false,
-            onChanged: (value) => {},
+            value: ref.watch(playbackConfigProvider).autoplay,
+            onChanged: (value) =>
+                ref.read(playbackConfigProvider.notifier).setAutoplay(value),
             title: const Text("Autoplay"),
             subtitle: const Text("Video will start playing automatically."),
           ),
 
           // ✅ SwitchListTile (알림 설정 ON/OFF)
           SwitchListTile.adaptive(
-            value: _notifications, // 현재 알림 설정 상태
-            onChanged: _onNotificationsChanged, // 변경 시 실행할 함수
+            value: false,
+            onChanged: (value) {},
             title: const Text("Enable notifications"), // 제목
             subtitle: const Text("They will be cute."), // 부제목
           ),
@@ -61,8 +51,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           // ✅ CheckboxListTile (체크박스 형태의 설정)
           CheckboxListTile(
             activeColor: Colors.black, // 체크박스 활성화 색상 (검은색)
-            value: _notifications, // 현재 상태
-            onChanged: _onNotificationsChanged, // 변경 시 실행할 함수
+            value: false,
+            onChanged: (value) {},
             title: const Text("Marketing emails"), // 제목
             subtitle: const Text("We won't spam you."), // 부제목
           ),
