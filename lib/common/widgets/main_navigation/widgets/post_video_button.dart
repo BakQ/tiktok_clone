@@ -4,9 +4,9 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils.dart';
 
 class PostVideoButton extends StatelessWidget {
-  final bool inverted;
-
   const PostVideoButton({super.key, required this.inverted});
+
+  final bool inverted;
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +14,16 @@ class PostVideoButton extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        //위치를 이동시키는 위젯
         Positioned(
           right: 20,
           child: Container(
             height: 30,
             width: 25,
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size8,
+            ),
             decoration: BoxDecoration(
-              color: const Color(0xff61d4f0),
+              color: const Color(0xff61D4F0),
               borderRadius: BorderRadius.circular(
                 Sizes.size8,
               ),
@@ -33,6 +35,9 @@ class PostVideoButton extends StatelessWidget {
           child: Container(
             height: 30,
             width: 25,
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size8,
+            ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.circular(
@@ -56,7 +61,7 @@ class PostVideoButton extends StatelessWidget {
             child: FaIcon(
               FontAwesomeIcons.plus,
               color: !inverted || isDark ? Colors.black : Colors.white,
-              size: Sizes.size16 + Sizes.size2,
+              size: 18,
             ),
           ),
         )

@@ -2,8 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
+import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/videos/view_models/playback_config_vm.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -118,7 +120,10 @@ class SettingsScreen extends ConsumerWidget {
                       child: const Text("No"), // 취소 버튼
                     ),
                     CupertinoDialogAction(
-                      onPressed: () => Navigator.of(context).pop(), // 다이얼로그 닫기
+                      onPressed: () {
+                        ref.read(authRepo).signOut(); // ✅ Firebase 로그아웃 실행
+                        context.go("/"); // ✅ 로그아웃 후 홈 화면으로 이동
+                      },
                       isDestructiveAction: true, // 빨간색 버튼 (위험한 행동 강조)
                       child: const Text("Yes"), // 확인 버튼
                     ),

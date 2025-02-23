@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/birthday_screen.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/features/authentication/widgets/form_button.dart';
 
-class PasswordScreen extends StatefulWidget {
+class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key});
 
   @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
+  ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
-  //TextEditingController는 TextField 위젯에 입력을 감지해서 가져오는 컨트롤러
-  final TextEditingController _passwordcontroller = TextEditingController();
+class _PasswordScreenState extends ConsumerState<PasswordScreen> {
+  final TextEditingController _passwordController = TextEditingController();
 
   String _password = "";
 
@@ -23,34 +24,34 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   void initState() {
     super.initState();
-    //
-    _passwordcontroller.addListener(() {
-      _password = _passwordcontroller.text;
-      setState(() {});
+    _passwordController.addListener(() {
+      setState(() {
+        _password = _passwordController.text;
+      });
     });
   }
 
-  //dispose 할때 usernamecontroller의 위젯을 삭제해주야 한다
-  // 삭제안하면 앱이 메모리 풀로 박살나고 말거다.
-  //그리고 super.dispose()를 밑에 두는게 깔끔하게 제거되는거다. initState는 위에
   @override
   void dispose() {
-    _passwordcontroller.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  //정규식으로 이메일 체크
   bool _isPasswordValid() {
-    return _password.isEmpty || _password.length < 8;
+    return _password.isNotEmpty && _password.length > 8;
   }
 
   void _onScaffoldTap() {
-    //FocusScope는 Flutter에서 **입력 포커스(focus)**를 관리하는 클래스
     FocusScope.of(context).unfocus();
   }
 
   void _onSubmit() {
-    if (_isPasswordValid()) return;
+    if (_password.isEmpty) return;
+    final state = ref.read(signUpForm.notifier).state; // 🔄 기존 입력 값 가져오기
+    ref.read(signUpForm.notifier).state = {
+      ...state,
+      "password": _password, // ✅ 비밀번호 추가 저장
+    };
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -60,7 +61,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   }
 
   void _onClearTap() {
-    _passwordcontroller.clear();
+    _passwordController.clear();
   }
 
   void _toggleObscureText() {
@@ -73,15 +74,15 @@ class _PasswordScreenState extends State<PasswordScreen> {
     return GestureDetector(
       onTap: _onScaffoldTap,
       child: Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
             "Sign up",
           ),
-          backgroundColor: Colors.white,
         ),
         body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Sizes.size36,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -95,25 +96,18 @@ class _PasswordScreenState extends State<PasswordScreen> {
               ),
               Gaps.v16,
               TextField(
-                //글자입력 정보 받아가는컨트롤러
-                controller: _passwordcontroller,
-                //자동완성기능도 넣고 뺄수있네 !!!
-                autocorrect: false,
-                //키보드의 "완료"(Enter) 버튼을 누를 때 실행되는 옵션
+                controller: _passwordController,
                 onEditingComplete: _onSubmit,
-                //패스워드 타입처럼 만들어줌
                 obscureText: _obscureText,
+                autocorrect: false,
                 decoration: InputDecoration(
-                  //suffix: 텍스트 필드의 오른쪽 끝에 표시되는 위젯.
-                  //prefix: 텍스트 필드의 왼쪽 시작 부분에 표시되는 위젯
-                  //suffixIcon 아이콘만 추가할 수 있으며, 기본적으로 패딩이 포함됩니다.
                   suffix: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       GestureDetector(
                         onTap: _onClearTap,
                         child: FaIcon(
-                          FontAwesomeIcons.circleXmark,
+                          FontAwesomeIcons.solidCircleXmark,
                           color: Colors.grey.shade500,
                           size: Sizes.size20,
                         ),
@@ -131,9 +125,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
                       ),
                     ],
                   ),
-                  //input창에 글나오게하는거
                   hintText: "Make it strong!",
-
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
@@ -151,7 +143,8 @@ class _PasswordScreenState extends State<PasswordScreen> {
               const Text(
                 'Your password must have:',
                 style: TextStyle(
-                    fontSize: Sizes.size14, fontWeight: FontWeight.w700),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               Gaps.v10,
               Row(
@@ -159,18 +152,21 @@ class _PasswordScreenState extends State<PasswordScreen> {
                   FaIcon(
                     FontAwesomeIcons.circleCheck,
                     size: Sizes.size20,
-                    color: !_isPasswordValid()
+                    color: _isPasswordValid()
                         ? Colors.green
                         : Colors.grey.shade400,
                   ),
-                  const Text('8 to 20 characters'),
+                  Gaps.h5,
+                  const Text("8 to 20 characters")
                 ],
               ),
               Gaps.v28,
               GestureDetector(
-                  onTap: _onSubmit,
-                  //부모 전체크기만큼 사이즈박스 만든다.
-                  child: FormButton(disabled: _isPasswordValid()))
+                onTap: _onSubmit,
+                child: FormButton(
+                  disabled: !_isPasswordValid(),
+                ),
+              ),
             ],
           ),
         ),

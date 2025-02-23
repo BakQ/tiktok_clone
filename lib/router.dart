@@ -1,100 +1,120 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tiktok_clone/common/widgets/main_navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/features/authentication/login_screen.dart';
+import 'package:tiktok_clone/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/features/inbox/inbox_screen.dart';
-import 'package:tiktok_clone/features/settings/settings_screen.dart';
+import 'package:tiktok_clone/features/inbox/activity_screen.dart';
+import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
+import 'package:tiktok_clone/features/inbox/chats_screen.dart';
+import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
+import 'package:tiktok_clone/features/videos/views/video_recording_screen.dart';
 
-import 'features/authentication/email_screen.dart';
-import 'features/authentication/login_screen.dart';
-import 'features/authentication/username_screen.dart';
-import 'features/users/user_profile_screen.dart';
+/// ✅ `routerProvider`는 Riverpod의 `Provider`를 사용하여 GoRouter 인스턴스를 생성
+final routerProvider = Provider((ref) {
+  //  ref.watch(authState);
+  return GoRouter(
+    initialLocation: "/home", // ✅ 초기 라우트 설정 (앱 실행 시 "/home"으로 시작)
 
-final router = GoRouter(
-  initialLocation: "/settings",
-  routes: [
-    // ✅ 회원가입 루트 ("/signup")
-    GoRoute(
-      name: SignUpScreen.routeName, // 라우트의 이름 (명시적으로 사용 가능)
-      path: SignUpScreen.routeURL, // 실제 URL 경로 (예: "/signup")
-      builder: (context, state) =>
-          const SignUpScreen(), // 빌더 함수: SignUpScreen 표시
+    /// 📌 로그인 상태에 따라 페이지 접근 제한 (redirect 설정)
+    redirect: (context, state) {
+      final isLoggedIn = ref.read(authRepo).isLoggedIn; // ✅ 로그인 상태 가져오기
 
-      // ✅ 하위 라우트 ("/signup/username")
-      routes: [
-        GoRoute(
-          path: UsernameScreen.routeURL, // 경로: "/signup/username"
-          name: UsernameScreen.routeName, // 라우트 이름
-          builder: (context, state) => const UsernameScreen(), // 사용자 이름 입력 화면
+      // ✅ 로그인되지 않은 경우, 회원가입 또는 로그인 페이지가 아니라면 회원가입 페이지로 리다이렉트
+      if (!isLoggedIn) {
+        if (state.matchedLocation != SignUpScreen.routeURL &&
+            state.matchedLocation != LoginScreen.routeURL) {
+          return SignUpScreen.routeURL; // 🔄 로그인되지 않았으면 회원가입 페이지로 이동
+        }
+      }
+      return null; // ✅ 로그인된 경우 리다이렉트 없음
+    },
 
-          // ✅ 하위 라우트 ("/signup/username/email")
-          routes: [
-            GoRoute(
-              name: EmailScreen.routeName, // 라우트 이름
-              path: EmailScreen.routeURL, // 경로: "/signup/username/email"
-              builder: (context, state) {
-                final args = state.extra as EmailScreenArgs;
-                return EmailScreen(username: args.username); // 전달된 username 사용
-              },
-            ),
-          ],
-        ),
-      ],
-    ),
+    /// 📌 앱의 전체 라우트 설정
+    routes: [
+      // ✅ 회원가입 페이지
+      GoRoute(
+        name: SignUpScreen.routeName,
+        path: SignUpScreen.routeURL,
+        builder: (context, state) => const SignUpScreen(),
+      ),
 
-    /* 
-      ✅ 로그인 화면 라우트 ("/login") - 현재는 주석 처리됨
-      - 로그인 화면을 이동할 수 있도록 설정
-      - 나중에 필요할 때 주석 해제 가능
-    */
-    /* 
-    GoRoute(
-      path: LoginScreen.routeName, // 경로: "/login"
-      builder: (context, state) => const LoginScreen(), // 로그인 화면 빌더
-    ), 
-    */
+      // ✅ 로그인 페이지
+      GoRoute(
+        name: LoginScreen.routeName,
+        path: LoginScreen.routeURL,
+        builder: (context, state) => const LoginScreen(),
+      ),
 
-    /* 
-      ✅ 사용자 이름 입력 화면을 위한 커스텀 애니메이션 라우트 ("/username_screen") - 현재는 주석 처리됨
-      - `CustomTransitionPage`를 사용하여 사용자 정의 애니메이션 적용
-      - 페이드 인/아웃 + 크기 변경 애니메이션 포함
-      - 기본 `builder` 대신 `pageBuilder` 사용하여 애니메이션 적용
-    */
-    /*
-    GoRoute(
-      name: "username_screen", // 라우트 이름 (명시적 사용 가능)
-      path: UsernameScreen.routeName, // 경로: "/username_screen"
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          child: const UsernameScreen(), // 사용자 이름 입력 화면
+      // ✅ 관심사 선택 페이지 (온보딩 과정)
+      GoRoute(
+        name: InterestsScreen.routeName,
+        path: InterestsScreen.routeURL,
+        builder: (context, state) => const InterestsScreen(),
+      ),
+
+      // ✅ 메인 네비게이션 화면 (홈, 검색, 알림, 프로필)
+      GoRoute(
+        path:
+            "/:tab(home|discover|inbox|profile)", // 📌 `home`, `discover`, `inbox`, `profile` 중 하나의 탭으로 이동
+        name: MainNavigationScreen.routeName,
+        builder: (context, state) {
+          final tab = state.pathParameters["tab"]!; // ✅ 선택한 탭의 이름을 가져오기
+          return MainNavigationScreen(tab: tab); // ✅ 선택한 탭을 보여주는 화면 반환
+        },
+      ),
+
+      // ✅ 활동 페이지 (알림 화면)
+      GoRoute(
+        name: ActivityScreen.routeName,
+        path: ActivityScreen.routeURL,
+        builder: (context, state) => const ActivityScreen(),
+      ),
+
+      // ✅ 채팅 목록 화면
+      GoRoute(
+        name: ChatsScreen.routeName,
+        path: ChatsScreen.routeURL,
+        builder: (context, state) => const ChatsScreen(),
+
+        /// 🔽 **하위 라우트 (채팅 상세 화면)**
+        routes: [
+          GoRoute(
+            name: ChatDetailScreen.routeName,
+            path: ChatDetailScreen.routeURL,
+            builder: (context, state) {
+              final chatId =
+                  state.pathParameters["chatId"]!; // ✅ URL에서 채팅 ID 가져오기
+              return ChatDetailScreen(
+                  chatId: chatId); // ✅ 채팅 ID를 전달하여 상세 화면 띄우기
+            },
+          )
+        ],
+      ),
+
+      // ✅ 비디오 녹화 화면 (애니메이션 효과 포함)
+      GoRoute(
+        path: VideoRecordingScreen.routeURL,
+        name: VideoRecordingScreen.routeName,
+
+        /// 📌 커스텀 애니메이션 적용 (아래에서 위로 슬라이드)
+        pageBuilder: (context, state) => CustomTransitionPage(
+          transitionDuration:
+              const Duration(milliseconds: 200), // ✅ 애니메이션 지속 시간 (0.2초)
+          child: const VideoRecordingScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation, // 페이드 인/아웃 애니메이션
-              child: ScaleTransition(
-                scale: animation, // 크기 변환 애니메이션
-                child: child, // 애니메이션이 적용될 화면
-              ),
+            final position = Tween(
+              begin: const Offset(0, 1), // ✅ 아래에서 시작
+              end: Offset.zero, // ✅ 최종 위치
+            ).animate(animation);
+            return SlideTransition(
+              position: position,
+              child: child, // ✅ 슬라이드 애니메이션 적용된 화면 반환
             );
           },
-        );
-      },
-    ),
-    */
-    GoRoute(
-      path: InboxScreen.routeURL, // 경로: "/signup/username"
-      name: InboxScreen.routeName, // 라우트 이름
-      builder: (context, state) => const InboxScreen(), // 사용자 이름 입력 화면
-    ),
-    GoRoute(
-      path: SettingsScreen.routeURL, // 경로: "/signup/username"
-      name: SettingsScreen.routeName, // 라우트 이름
-      builder: (context, state) => const SettingsScreen(), // 사용자 이름 입력 화면
-    ),
-    GoRoute(
-      path: "/users/:username",
-      builder: (context, state) {
-        final username = state.pathParameters['username']; // URL에서 username 추출
-        final tab = state.uri.queryParameters["show"]; // "?show=likes" 데이터 추출
-        return UserProfileScreen(username: username!, tab: tab!);
-      },
-    ),
-  ],
-);
+        ),
+      )
+    ],
+  );
+});

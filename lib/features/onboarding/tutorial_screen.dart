@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils.dart';
-
-import '../main_navigation/main_navigation_screen.dart';
 
 enum Direction { right, left }
 
@@ -23,13 +22,14 @@ class _TutorialScreenState extends State<TutorialScreen> {
 
   void _onPanUpdate(DragUpdateDetails details) {
     if (details.delta.dx > 0) {
-      //to the right
-      _direction = Direction.right;
+      setState(() {
+        _direction = Direction.right;
+      });
     } else {
-      // to the left
-      _direction = Direction.left;
+      setState(() {
+        _direction = Direction.left;
+      });
     }
-    setState(() {});
   }
 
   void _onPanEnd(DragEndDetails detail) {
@@ -45,19 +45,13 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   void _onEnterAppTap() {
-    Navigator.of(context).pushAndRemoveUntil(
-        // pushAndRemoveUntil은 앞에 있었던 화면을 제거해주는 함수다.
-        MaterialPageRoute(
-          builder: (context) => const MainNavigationScreen(),
-        ),
-        (route) => false // 리턴값에 따라서 뒤로가기 버튼이 생길수도 있고 없을수도있다.
-        ); //
+    context.go("/home");
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanUpdate: _onPanUpdate, //dragging할때 이벤트
+      onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: Scaffold(
         body: Padding(
@@ -81,28 +75,27 @@ class _TutorialScreenState extends State<TutorialScreen> {
                       style: TextStyle(
                         fontSize: Sizes.size20,
                       ),
-                    ),
+                    )
                   ]),
               secondChild: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Gaps.v80,
-                  Text(
-                    "Follow the rules",
-                    style: TextStyle(
-                      fontSize: Sizes.size40,
-                      fontWeight: FontWeight.bold,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Gaps.v80,
+                    Text(
+                      "Follow the rules",
+                      style: TextStyle(
+                        fontSize: Sizes.size40,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  Gaps.v16,
-                  Text(
-                    "Take care of one another! plis!",
-                    style: TextStyle(
-                      fontSize: Sizes.size20,
-                    ),
-                  ),
-                ],
-              ),
+                    Gaps.v16,
+                    Text(
+                      "Videos are personalized for you based on what you watch, like, and share.",
+                      style: TextStyle(
+                        fontSize: Sizes.size20,
+                      ),
+                    )
+                  ]),
               crossFadeState: _showingPage == Page.first
                   ? CrossFadeState.showFirst
                   : CrossFadeState.showSecond,
@@ -112,21 +105,22 @@ class _TutorialScreenState extends State<TutorialScreen> {
         ),
         bottomNavigationBar: Container(
           color: isDarkMode(context) ? Colors.black : Colors.white,
-          padding: const EdgeInsets.only(
-            top: Sizes.size32,
-            bottom: Sizes.size64,
-            left: Sizes.size24,
-            right: Sizes.size24,
-          ),
-          child: AnimatedOpacity(
-            duration: const Duration(milliseconds: 300),
-            opacity: _showingPage == Page.first ? 0 : 1,
-            child: CupertinoButton(
-              onPressed: _onEnterAppTap,
-              color: Theme.of(context).primaryColor,
-              child: const Text('Enter the app!'),
-            ),
-          ),
+          child: Padding(
+              padding: const EdgeInsets.only(
+                top: Sizes.size32,
+                bottom: Sizes.size64,
+                left: Sizes.size24,
+                right: Sizes.size24,
+              ),
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 300),
+                opacity: _showingPage == Page.first ? 0 : 1,
+                child: CupertinoButton(
+                  onPressed: _onEnterAppTap,
+                  color: Theme.of(context).primaryColor,
+                  child: const Text('Enter the app!'),
+                ),
+              )),
         ),
       ),
     );
