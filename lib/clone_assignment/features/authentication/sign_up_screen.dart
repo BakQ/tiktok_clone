@@ -1,166 +1,130 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:tiktok_clone/clone_assignment/features/authentication/account_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:tiktok_clone/clone_assignment/features/authentication/view_models/signup_view_model.dart';
+import 'package:tiktok_clone/constants/sizes.dart';
 
-import '../../constants/gaps.dart';
-import '../../constants/sizes.dart';
-import '../../widgets/auth_boutton.dart';
-
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
+  static const routeURL = "/signUp";
+  static const routeName = "signUp";
   const SignUpScreen({super.key});
 
-  //메서드 앞에 언더바를 하면 private 접근자가 된다 플러터는 따로 접근자 변수가 없다 .
-  void _onAccountTap(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AccountScreen(),
-      ),
-    ); // MaterialPageRoute
+  @override
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  void _onSignUpTap() {
+    // 입력한 값을 signUpForm provider에 저장
+    ref.read(signUpForm.notifier).state = {
+      "email": emailController.text.trim(),
+      "password": passwordController.text.trim(),
+    };
+    // 회원가입 실행 (Firebase Auth를 통한 회원가입)
+    ref.read(signUpProvider.notifier).signUp(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    // 회원가입 로딩 상태를 구독 (Optional: 로딩 인디케이터로 활용)
+    final signUpState = ref.watch(signUpProvider);
     return Scaffold(
-      //안전 영역 그려주는 위젯
-      body: SafeArea(
+      backgroundColor: Colors.white,
+      body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.size40,
-          ),
-          child: Column(
-            children: [
-              Gaps.v10,
-              const FaIcon(
-                FontAwesomeIcons.twitter,
-                color: Colors.blue,
-                size: Sizes.size32,
-              ),
-              Gaps.v60,
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 100),
-                child: Text(
-                  "See what's happening\nin the world right now.",
-                  style: TextStyle(
-                    fontSize: Sizes.size28,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              Gaps.v60,
-              const AuthBoutton(
-                  icon: FaIcon(FontAwesomeIcons.google),
-                  text: "Continue with Google"),
-              Gaps.v16,
-              const AuthBoutton(
-                  icon: FaIcon(FontAwesomeIcons.apple),
-                  text: "Continue with Apple"),
-              Gaps.v10,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey.shade300, // 선의 색상
-                      thickness: 1, // 선의 두께
-                    ),
-                  ),
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 8.0), // "or" 양옆의 여백
-                    child: Text(
-                      "or",
-                      style: TextStyle(
-                        color: Colors.grey, // 텍스트 색상
-                        fontSize: 14, // 텍스트 크기
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey.shade300,
-                      thickness: 1,
-                    ),
-                  ),
-                ],
-              ),
-              Gaps.v10,
-              GestureDetector(
-                onTap: () => _onAccountTap(context),
-                child: const AuthBoutton(
-                  text: "Create account",
-                  backGroudColor: Colors.black,
-                  textColor: Colors.white,
-                ),
-              ),
-              Gaps.v20,
-              Center(
-                child: RichText(
-                  textAlign: TextAlign.left,
-                  text: TextSpan(
-                    text: 'By signing up, you agree to our ',
-                    style: TextStyle(
-                      color: Colors.grey.shade600, // 기본 텍스트 색상
-                      fontSize: Sizes.size16, // 기본 텍스트 크기
-                    ),
-                    children: const [
-                      TextSpan(
-                        text: 'Terms',
-                        style: TextStyle(
-                          color: Colors.blue, // 하이라이트 텍스트 색상
-                          decoration: TextDecoration.underline, // 밑줄 추가
-                        ),
-                      ),
-                      TextSpan(
-                        text: ', ',
-                      ),
-                      TextSpan(
-                        text: 'Privacy Policy',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      TextSpan(
-                        text: ', and ',
-                      ),
-                      TextSpan(
-                        text: 'Cookie Use',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '.',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.grey.shade50,
-        //경계선 제어
-        elevation: 2,
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size32,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('Have an account already?'),
-                Gaps.h5,
-                //제스쳐 위젯
-                Text(
-                  'Log in',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w600),
+                const Text(
+                  'English (US)',
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
+                ),
+                const SizedBox(height: 20),
+                Image.asset(
+                  'assets/images/threads_logo.png', // 동일 로고 이미지 사용
+                  height: 80,
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    hintText: 'Mobile number or email',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 14,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _onSignUpTap,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: signUpState.isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            'Sign up',
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () => context.goNamed("login"),
+                  child: const Text(
+                    'Already have an account?',
+                    style: TextStyle(color: Colors.black54),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Meta',
+                  style: TextStyle(fontSize: 16, color: Colors.black54),
                 ),
               ],
             ),

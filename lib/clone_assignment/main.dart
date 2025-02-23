@@ -1,16 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/lepos/setting_config_repo.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/view_models/setting_config_vm.dart';
-import 'package:tiktok_clone/clone_assignment/router.dart' show router;
+import 'package:tiktok_clone/clone_assignment/router.dart'
+    show router, routerProvider;
+import 'package:tiktok_clone/firebase_options.dart';
 
 import '../constants/sizes.dart';
 
 void main() async {
   // ✅ Flutter 엔진이 초기화되도록 보장 (비동기 코드 사용 가능)
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options:
+        DefaultFirebaseOptions.currentPlatform, // ✅ Firebase 초기화 (플랫폼별 설정 적용)
+  );
 
   // 📌 `SharedPreferences` 인스턴스를 생성하여 로컬 저장소 사용 준비
   final preferences = await SharedPreferences.getInstance();
@@ -40,7 +48,7 @@ class XClone extends ConsumerWidget {
     // darkMode 값에 따라 테마 모드를 결정합니다.
 
     return MaterialApp.router(
-      routerConfig: router,
+      routerConfig: ref.watch(routerProvider), // ✅ Riverpod을 사용하여 라우팅 설정
       debugShowCheckedModeBanner: false, // ✅ 디버그 배너 제거
       title: 'Clone',
       themeMode: ref.watch(settingConfigProvider).darkMode

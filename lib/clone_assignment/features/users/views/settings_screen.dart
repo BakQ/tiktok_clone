@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tiktok_clone/clone_assignment/features/authentication/repos/authentication_repo.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/view_models/setting_config_vm.dart';
 import 'package:tiktok_clone/clone_assignment/features/users/views/privacy_screen.dart';
 import 'package:tiktok_clone/clone_assignment/utils.dart';
@@ -37,7 +38,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: const Text("No"),
           ),
           CupertinoDialogAction(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () async {
+              // 다이얼로그를 닫은 후
+              Navigator.of(context).pop();
+              // 로그아웃 완료될 때까지 기다린 후
+              await ref.read(authRepo).signOut();
+              // 로그인 화면으로 이동
+              context.go("/login");
+            },
             isDestructiveAction: true,
             child: const Text("Yes"),
           ),
